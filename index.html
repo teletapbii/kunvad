@@ -1,0 +1,307 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>KUNVAD — Wisdom in Nonsense</title>
+<meta name="description" content="Tap KunvaD — Fashion & Retail. Wisdom in Nonsense.">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+<link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Space+Grotesk:wght@300;400;700&display=swap" rel="stylesheet">
+<style>
+  :root {
+    --bg:     rgb(106,171,176);
+    --accent: rgb(245,192,24);
+    --hl:     rgb(255,61,138);
+  }
+  * { box-sizing: border-box; margin: 0; padding: 0; }
+  body { background: var(--bg); min-height: 100vh; font-family: 'Space Grotesk', sans-serif; }
+
+  /* PAGE TRANSITIONS */
+  @keyframes slideIn {
+    from { opacity: 0; transform: translateX(40px); }
+    to   { opacity: 1; transform: translateX(0); }
+  }
+  @keyframes fadeUp {
+    from { opacity: 0; transform: translateY(24px); }
+    to   { opacity: 1; transform: translateY(0); }
+  }
+  .page { animation: slideIn 0.35s cubic-bezier(.22,.68,0,1.2) both; }
+  .hero-title { animation: fadeUp 0.6s cubic-bezier(.22,.68,0,1.2) both; display: inline-block; cursor: default; }
+  .hero-sub   { animation: fadeUp 0.6s 0.1s cubic-bezier(.22,.68,0,1.2) both; }
+  .hero-nav   { animation: fadeUp 0.6s 0.2s cubic-bezier(.22,.68,0,1.2) both; }
+
+  /* NAV (inner pages) */
+  #inner-nav {
+    display: none;
+    position: fixed; top: 0; left: 0; right: 0; z-index: 100;
+    align-items: center; justify-content: space-between;
+    padding: 0 64px; height: 64px;
+    background: var(--bg);
+    border-bottom: 1px solid rgba(245,192,24,0.2);
+  }
+  #inner-nav.visible { display: flex; }
+  .nav-logo {
+    background: none; border: none; cursor: pointer;
+    font-family: 'Bebas Neue', serif; font-size: 28px; letter-spacing: 6px;
+    color: var(--accent); line-height: 1;
+  }
+  .nav-links { display: flex; gap: 12px; align-items: center; }
+
+  /* BUTTONS */
+  .btn-filled {
+    border: none; cursor: pointer; border-radius: 6px;
+    background: var(--accent); padding: 14px 32px;
+    font-family: 'Space Grotesk', sans-serif; font-weight: 700;
+    font-size: 15px; letter-spacing: 0.5px; color: var(--hl); line-height: 1;
+    transition: transform 0.65s cubic-bezier(.22,.68,0,1.1);
+  }
+  .btn-outlined {
+    border: 2px solid var(--accent); cursor: pointer; border-radius: 6px;
+    background: transparent; padding: 12px 32px;
+    font-family: 'Space Grotesk', sans-serif; font-weight: 700;
+    font-size: 15px; letter-spacing: 0.5px; color: var(--accent); line-height: 1;
+    transition: transform 0.65s cubic-bezier(.22,.68,0,1.1);
+  }
+  .btn-pink {
+    border: none; cursor: pointer; border-radius: 6px;
+    background: var(--hl); padding: 14px 32px;
+    font-family: 'Space Grotesk', sans-serif; font-weight: 700;
+    font-size: 15px; letter-spacing: 0.5px; color: var(--accent); line-height: 1;
+    transition: transform 0.65s cubic-bezier(.22,.68,0,1.1);
+  }
+  /* nav-size buttons */
+  .btn-filled.sm  { padding: 9px 20px; font-size: 13px; }
+  .btn-outlined.sm{ padding: 7px 20px; font-size: 13px; }
+  .btn-pink.sm    { padding: 9px 20px; font-size: 13px; }
+
+  /* PAGES */
+  .page-shell {
+    width: 100%; min-height: 100vh;
+    padding: 120px 64px 80px;
+    display: flex; align-items: flex-start; justify-content: center;
+  }
+  .page-inner { width: 100%; max-width: 860px; display: flex; flex-direction: column; gap: 24px; }
+  .page-title {
+    font-family: 'Bebas Neue', serif; font-weight: 400;
+    font-size: 96px; letter-spacing: 14px;
+    color: var(--accent); line-height: 1;
+  }
+  .page-sub {
+    font-family: 'Space Grotesk', sans-serif; font-weight: 700;
+    font-size: 13px; letter-spacing: 4px; color: var(--hl); line-height: 1;
+  }
+  .pink-bar { width: 64px; height: 3px; border-radius: 2px; background: var(--hl); }
+  .page-body {
+    font-weight: 300; font-size: 20px; line-height: 1.7;
+    color: rgba(255,255,255,0.92); max-width: 560px;
+  }
+  .page-coming {
+    font-family: 'Bebas Neue', serif; font-weight: 400;
+    font-size: 16px; letter-spacing: 6px; color: var(--accent); line-height: 1;
+  }
+  .page-big-title {
+    font-family: 'Bebas Neue', serif; font-weight: 400;
+    font-size: 72px; letter-spacing: 8px; color: var(--accent); line-height: 1;
+  }
+
+  /* HOME */
+  #home-page {
+    width: 100%; min-height: 100vh;
+    display: flex; flex-direction: column;
+    align-items: center; justify-content: center;
+    gap: 48px; padding: 80px 64px;
+  }
+  #hero-title {
+    font-family: 'Bebas Neue', serif; font-weight: 400;
+    font-size: 140px; letter-spacing: 24px;
+    color: var(--accent); line-height: 1; text-align: center;
+  }
+  #hero-sub {
+    font-family: 'Space Grotesk', sans-serif; font-weight: 300;
+    font-size: 18px; letter-spacing: 4px;
+    color: var(--hl); line-height: 1; text-align: center;
+  }
+  #hero-nav { display: flex; flex-direction: row; gap: 16px; align-items: center; }
+
+  /* HIDDEN */
+  .hidden { display: none !important; }
+
+  /* CONTACT FORM */
+  .contact-form { display: flex; flex-direction: column; gap: 24px; max-width: 480px; }
+  .contact-form label { font-size: 11px; letter-spacing: 2px; text-transform: uppercase; color: rgba(255,255,255,0.4); display: block; margin-bottom: 8px; }
+  .contact-form input, .contact-form textarea {
+    width: 100%; background: transparent;
+    border: none; border-bottom: 1px solid rgba(245,192,24,0.3);
+    color: rgba(255,255,255,0.9); font-family: 'Space Grotesk', sans-serif;
+    font-size: 17px; padding: 10px 0; outline: none;
+  }
+  .contact-form input::placeholder, .contact-form textarea::placeholder { color: rgba(255,255,255,0.25); }
+  .contact-form textarea { resize: vertical; min-height: 80px; }
+  .linkedin-link { font-size: 20px; }
+  .contact-note { font-weight: 300; font-size: 18px; line-height: 1.7; color: rgba(255,255,255,0.92); max-width: 480px; }
+
+  @media (max-width: 768px) {
+    #inner-nav { padding: 0 24px; }
+    #home-page, .page-shell { padding-left: 24px; padding-right: 24px; }
+    #hero-title { font-size: 72px; letter-spacing: 12px; }
+    .page-title { font-size: 60px; }
+    .page-big-title { font-size: 48px; }
+    #hero-nav { flex-wrap: wrap; justify-content: center; }
+  }
+</style>
+</head>
+<body>
+
+<!-- INNER NAV (hidden on home) -->
+<nav id="inner-nav">
+  <button class="nav-logo" onclick="goTo('home')">KUNVAD</button>
+  <div class="nav-links">
+    <button class="btn-filled sm" onclick="goTo('me')">It's me</button>
+    <button class="btn-outlined sm" onclick="goTo('project')">It's a Project</button>
+    <button class="btn-pink sm" onclick="goTo('blog')">It's Blog</button>
+    <button class="btn-filled sm" onclick="goTo('hi')">Hi</button>
+  </div>
+</nav>
+
+<!-- HOME PAGE -->
+<div id="home-page">
+  <div style="display:flex;flex-direction:column;align-items:center;gap:10px;">
+    <span id="hero-title" class="hero-title">KUNVAD</span>
+    <span id="hero-sub" class="hero-sub">Wisdom in Nonsense</span>
+  </div>
+  <div id="hero-nav" class="hero-nav">
+    <button class="btn-filled" id="btn-me" onclick="goTo('me')">It's me</button>
+    <button class="btn-outlined" id="btn-project" onclick="goTo('project')">It's a Project</button>
+    <button class="btn-pink" id="btn-blog" onclick="goTo('blog')">It's Blog</button>
+    <button class="btn-filled" id="btn-hi" onclick="goTo('hi')">Hi</button>
+  </div>
+</div>
+
+<!-- IT'S ME PAGE -->
+<div id="me-page" class="page hidden">
+  <div class="page-shell">
+    <div class="page-inner">
+      <span class="page-title">KUNVAD</span>
+      <span class="page-sub">WISDOM IN NONSENSE</span>
+      <div class="pink-bar"></div>
+      <p class="page-body">Welcome! My name is Tap KunvaD. I'm a believer that you can find wisdom in nonsense. Here, I share a blend of my personal interests and my 12-year journey in fashion retail.</p>
+    </div>
+  </div>
+</div>
+
+<!-- IT'S A PROJECT PAGE -->
+<div id="project-page" class="page hidden">
+  <div class="page-shell">
+    <div class="page-inner">
+      <span class="page-big-title">IT'S A PROJECT</span>
+      <div class="pink-bar"></div>
+      <span class="page-coming">Nonsense thing is loading....</span>
+    </div>
+  </div>
+</div>
+
+<!-- IT'S BLOG PAGE -->
+<div id="blog-page" class="page hidden">
+  <div class="page-shell">
+    <div class="page-inner">
+      <span class="page-big-title">IT'S BLOG</span>
+      <div class="pink-bar"></div>
+      <span class="page-coming">Nonsense Story is loading....</span>
+    </div>
+  </div>
+</div>
+
+<!-- HI PAGE -->
+<div id="hi-page" class="page hidden">
+  <div class="page-shell">
+    <div class="page-inner">
+      <span class="page-big-title">HI THERE</span>
+      <div class="pink-bar"></div>
+      <p class="contact-note">Thanks for stopping by. Feel free to reach out — always happy to connect over nonsense.<br><br>
+        Explore my 9-5 experience: <a href="https://www.linkedin.com/in/kunvad" target="_blank" class="linkedin-link">🥸</a>
+      </p>
+    </div>
+  </div>
+</div>
+
+<script>
+  // ─── NAVIGATION ───────────────────────────────────────────
+  const pages = ['home','me','project','blog','hi'];
+
+  function goTo(p) {
+    pages.forEach(id => {
+      const el = document.getElementById(id === 'home' ? 'home-page' : id + '-page');
+      if (!el) return;
+      el.classList.toggle('hidden', id !== p);
+      if (id !== 'home' && id === p) {
+        el.classList.remove('page');
+        void el.offsetWidth; // reflow to restart animation
+        el.classList.add('page');
+      }
+    });
+    const nav = document.getElementById('inner-nav');
+    nav.classList.toggle('visible', p !== 'home');
+  }
+
+  // ─── BUTTON EVADE ─────────────────────────────────────────
+  const btnIds = ['btn-me','btn-project','btn-blog','btn-hi'];
+  btnIds.forEach(id => {
+    const btn = document.getElementById(id);
+    if (!btn) return;
+    btn.addEventListener('mouseenter', () => evade(btn));
+  });
+
+  function evade(el) {
+    const offsets = [
+      [60,0],[-60,0],[0,44],[0,-44],
+      [48,32],[-48,-32],[-48,32],[48,-32]
+    ];
+    const [x,y] = offsets[Math.floor(Math.random() * offsets.length)];
+    el.style.transition = 'transform 0.18s cubic-bezier(.22,.68,0,1.3)';
+    el.style.transform  = `translate(${x}px,${y}px)`;
+    setTimeout(() => {
+      el.style.transition = 'transform 0.65s cubic-bezier(.22,.68,0,1.1)';
+      el.style.transform  = 'translate(0,0)';
+    }, 2000);
+  }
+
+  // ─── TITLE EVADE ──────────────────────────────────────────
+  const titleEl = document.getElementById('hero-title');
+  titleEl.addEventListener('mouseenter', () => {
+    const offsets = [[60,0],[-60,0],[0,44],[0,-44]];
+    const [x,y] = offsets[Math.floor(Math.random() * offsets.length)];
+    titleEl.style.transition = 'transform 0.18s cubic-bezier(.22,.68,0,1.3), text-shadow 0.12s ease-out';
+    titleEl.style.transform  = `translate(${x}px,${y}px)`;
+    setTimeout(() => {
+      titleEl.style.transition = 'transform 0.65s cubic-bezier(.22,.68,0,1.1)';
+      titleEl.style.transform  = 'translate(0,0)';
+    }, 2000);
+  });
+
+  // ─── CURSOR GLOW ──────────────────────────────────────────
+  const homePage = document.getElementById('home-page');
+  let rafId = null;
+  homePage.addEventListener('mousemove', (e) => {
+    if (rafId) return;
+    rafId = requestAnimationFrame(() => {
+      rafId = null;
+      const r   = titleEl.getBoundingClientRect();
+      const cx  = r.left + r.width  / 2;
+      const cy  = r.top  + r.height / 2;
+      const dx  = (e.clientX - cx) / (window.innerWidth  / 2);
+      const dy  = (e.clientY - cy) / (window.innerHeight / 2);
+      const sx  = (e.clientX - cx) * 0.18;
+      const sy  = (e.clientY - cy) * 0.18;
+      const dist   = Math.sqrt(dx*dx + dy*dy);
+      const spread = Math.max(4, 28 - dist * 12);
+      titleEl.style.textShadow = `${sx}px ${sy}px ${spread}px rgba(245,192,24,0.55), 0 0 60px rgba(245,192,24,0.18)`;
+    });
+  });
+  homePage.addEventListener('mouseleave', () => {
+    titleEl.style.transition  = 'text-shadow 0.6s ease';
+    titleEl.style.textShadow  = '';
+  });
+</script>
+</body>
+</html>
