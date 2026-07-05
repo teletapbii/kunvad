@@ -1,0 +1,77 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="true" />
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Space+Grotesk:wght@300;400;700&display=swap" rel="stylesheet" />
+  <style>
+    :root { --bg: rgb(106,171,176); --accent: rgb(245,192,24); --hl: rgb(255,61,138); }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background: var(--bg); min-height: 100vh; }
+    @keyframes slideIn { from { opacity: 0; transform: translateX(40px); } to { opacity: 1; transform: translateX(0); } }
+    .page { animation: slideIn 0.35s cubic-bezier(.22,.68,0,1.2) both; }
+    a { text-decoration: none; }
+  </style>
+</helmet>
+
+<nav style="position:fixed; top:0; left:0; right:0; z-index:100; display:flex; align-items:center; justify-content:space-between; padding:0 64px; height:64px; background:var(--bg); border-bottom:1px solid rgba(245,192,24,0.2);">
+  <a href="KUNVAD-Home.dc.html" style="font-family:'Bebas Neue',serif; font-size:28px; letter-spacing:6px; color:var(--accent); line-height:1;">{{ navLogo }}</a>
+  <div style="display:flex; gap:12px; align-items:center;">
+    <a href="KUNVAD-Me.dc.html"      style="border-radius:6px; background:var(--accent); padding:9px 20px; font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:13px; color:var(--hl);">{{ navMe }}</a>
+    <a href="KUNVAD-Project.dc.html" style="border:2px solid var(--accent); border-radius:6px; padding:7px 20px; font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:13px; color:var(--accent);">{{ navProject }}</a>
+    <a href="KUNVAD-Blog.dc.html"    style="border-radius:6px; background:var(--hl); padding:9px 20px; font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:13px; color:var(--accent);">{{ navBlog }}</a>
+    <a href="KUNVAD-Hi.dc.html"      style="border-radius:6px; background:var(--accent); padding:9px 20px; font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:13px; color:var(--hl);">{{ navHi }}</a>
+  </div>
+</nav>
+
+<div class="page" style="width:100%; min-height:100vh; padding:120px 64px 80px; display:flex; align-items:flex-start; justify-content:center;">
+  <div style="width:100%; max-width:860px; display:flex; flex-direction:column; gap:16px;">
+    <span style="font-family:'Bebas Neue',serif; font-weight:400; font-size:96px; letter-spacing:8px; color:var(--accent); line-height:1;">{{ blogHeading }}</span>
+    <div style="width:64px; height:3px; border-radius:2px; background:var(--hl);"></div>
+    <span style="font-family:'Bebas Neue',serif; font-weight:400; font-size:16px; letter-spacing:6px; color:var(--accent); line-height:1;">{{ blogStatus }}</span>
+  </div>
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{ &quot;$preview&quot;: { &quot;width&quot;: 1280, &quot;height&quot;: 800 } }">
+class Component extends DCLogic {
+  _D = {
+    theme: { bg: 'rgb(106,171,176)', accent: 'rgb(245,192,24)', hl: 'rgb(255,61,138)' },
+    nav:   { logo: 'KUNVAD', me: "It's me", project: "It's a Project", blog: "It's Blog", hi: 'Hi' },
+    blog:  { heading: "IT'S BLOG", status: 'Nonsense Story is loading....' },
+  };
+  state = { cms: this._load() };
+  _load() { try { return JSON.parse(localStorage.getItem('kunvad_cms') || '{}'); } catch(e) { return {}; } }
+  _get(s, k) { const c = this.state.cms; return (c[s] && c[s][k] !== undefined) ? c[s][k] : (this._D[s] || {})[k]; }
+  _applyTheme() {
+    const r = document.documentElement;
+    r.style.setProperty('--bg',     this._get('theme','bg')     || 'rgb(106,171,176)');
+    r.style.setProperty('--accent', this._get('theme','accent') || 'rgb(245,192,24)');
+    r.style.setProperty('--hl',     this._get('theme','hl')     || 'rgb(255,61,138)');
+  }
+  componentDidMount() {
+    this._onStorage = () => this.setState({ cms: this._load() });
+    window.addEventListener('storage', this._onStorage);
+    this._applyTheme();
+  }
+  componentDidUpdate() { this._applyTheme(); }
+  componentWillUnmount() { window.removeEventListener('storage', this._onStorage); }
+  renderVals() {
+    const g = (s, k) => this._get(s, k);
+    return {
+      navLogo: g('nav','logo') || 'KUNVAD', navMe: g('nav','me') || "It's me",
+      navProject: g('nav','project') || "It's a Project", navBlog: g('nav','blog') || "It's Blog", navHi: g('nav','hi') || 'Hi',
+      blogHeading: g('blog','heading') || "IT'S BLOG",
+      blogStatus:  g('blog','status')  || '',
+    };
+  }
+}
+</script>
+</body>
+</html>

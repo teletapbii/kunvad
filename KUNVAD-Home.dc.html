@@ -1,0 +1,195 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="true">
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&amp;family=Space+Grotesk:wght@300;400;700&amp;display=swap" rel="stylesheet">
+  <style>
+    :root { --bg: rgb(106,171,176); --accent: rgb(245,192,24); --hl: rgb(255,61,138); }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background: var(--bg); min-height: 100vh; }
+    @keyframes heroFade {
+      from { opacity: 0; transform: translateY(24px); }
+      to   { opacity: 1; transform: translateY(0); }
+    }
+    .hero-title { animation: heroFade 0.6s cubic-bezier(.22,.68,0,1.2) both; }
+    .hero-sub   { animation: heroFade 0.6s 0.1s cubic-bezier(.22,.68,0,1.2) both; }
+    .hero-nav   { animation: heroFade 0.6s 0.2s cubic-bezier(.22,.68,0,1.2) both; }
+  </style>
+</helmet>
+
+<div data-home-stage="true" style="width: 100%; min-height: 100vh; background: var(--bg); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 48px; padding: 80px 64px;">
+
+  <!-- Title with glow + evasive -->
+  <div style="display: flex; flex-direction: column; align-items: center; gap: 10px;">
+    <span class="hero-title" data-hero-title="true" onMouseEnter="{{ evadeTitle }}" style="{{ styleTitleEvade }}">{{ homeTitle }}</span>
+    <span class="hero-sub" style="font-family: 'Space Grotesk', sans-serif; font-weight: 300; font-size: 18px; letter-spacing: 4px; color: var(--accent); line-height: 1; text-align: center;">{{ homeTagline }}</span>
+  </div>
+
+  <!-- Evasive nav buttons -->
+  <div class="hero-nav" style="display: flex; flex-direction: row; gap: 16px; align-items: center;">
+    <button onMouseEnter="{{ evadeMe }}" onClick="{{ goMe }}" style="{{ styleMe }}">{{ navMe }}</button>
+    <button onMouseEnter="{{ evadeProject }}" onClick="{{ goProject }}" style="{{ styleProject }}">{{ navProject }}</button>
+    <button onMouseEnter="{{ evadeBlog }}" onClick="{{ goBlog }}" style="{{ styleBlog }}">{{ navBlog }}</button>
+    <button onMouseEnter="{{ evadeHi }}" onClick="{{ goHi }}" style="{{ styleHi }}">{{ navHi }}</button>
+  </div>
+
+</div>
+<div style="font-size: 16px; line-height: 1; font-family: 'Bebas Neue', serif; position: absolute; left: 391px; top: 53px">{{ homeExtra }}</div></x-dc>
+<script type="text/x-dc" data-dc-script data-props="{ &quot;$preview&quot;: { &quot;width&quot;: 1280, &quot;height&quot;: 800 } }">
+class Component extends DCLogic {
+  _D = {
+    theme: { bg: 'rgb(106,171,176)', accent: 'rgb(245,192,24)', hl: 'rgb(255,61,138)' },
+    nav:   { logo: 'KUNVAD', me: "It's me", project: "It's a Project", blog: "It's Blog", hi: 'Hi' },
+    home:  { title: 'KUNVAD', tagline: 'Wisdom in Nonsense', extra: 'Your text here' },
+  };
+  state = { evadeKey: null, evadeX: 0, evadeY: 0, cms: this._load() };
+  _evadeTimer = null;
+
+  _load() { try { return JSON.parse(localStorage.getItem('kunvad_cms') || '{}'); } catch(e) { return {}; } }
+  _get(s, k) { const c = this.state.cms; return (c[s] && c[s][k] !== undefined) ? c[s][k] : (this._D[s] || {})[k]; }
+  _applyTheme() {
+    const r = document.documentElement;
+    r.style.setProperty('--bg',     this._get('theme','bg'));
+    r.style.setProperty('--accent', this._get('theme','accent'));
+    r.style.setProperty('--hl',     this._get('theme','hl'));
+  }
+
+  componentDidMount() {
+    this._onStorage = () => this.setState({ cms: this._load() });
+    window.addEventListener('storage', this._onStorage);
+    this._applyTheme();
+    this._attachGlow();
+  }
+  componentDidUpdate() {
+    this._applyTheme();
+    const stage = document.querySelector('[data-home-stage]');
+    if (stage !== this._glowStage) this._attachGlow();
+  }
+  componentWillUnmount() {
+    window.removeEventListener('storage', this._onStorage);
+    this._detachGlow();
+  }
+
+  _evade(key) {
+    if (this._evadeTimer) clearTimeout(this._evadeTimer);
+    const offsets = [
+      { x: 60, y: 0 }, { x: -60, y: 0 },
+      { x: 0, y: 44 }, { x: 0, y: -44 },
+      { x: 48, y: 32 }, { x: -48, y: -32 },
+      { x: -48, y: 32 }, { x: 48, y: -32 },
+    ];
+    const o = offsets[Math.floor(Math.random() * offsets.length)];
+    this.setState({ evadeKey: key, evadeX: o.x, evadeY: o.y });
+    this._evadeTimer = setTimeout(
+      () => this.setState({ evadeKey: null, evadeX: 0, evadeY: 0 }),
+      2000
+    );
+  }
+
+  _btnStyle(key, base) {
+    const { evadeKey, evadeX, evadeY } = this.state;
+    const evading = evadeKey === key;
+    return Object.assign({}, base, {
+      transform:  evading ? `translate(${evadeX}px,${evadeY}px)` : 'translate(0,0)',
+      transition: evading
+        ? 'transform 0.18s cubic-bezier(.22,.68,0,1.3)'
+        : 'transform 0.65s cubic-bezier(.22,.68,0,1.1)',
+      cursor: 'pointer',
+    });
+  }
+
+  _attachGlow() {
+    this._detachGlow();
+    const stage = document.querySelector('[data-home-stage]');
+    if (!stage) return;
+    this._glowStage = stage;
+    this._rafId = null;
+
+    this._onMove = (e) => {
+      this._mx = e.clientX; this._my = e.clientY;
+      if (!this._rafId) {
+        this._rafId = requestAnimationFrame(() => {
+          this._rafId = null;
+          const el = document.querySelector('[data-hero-title]');
+          if (!el) return;
+          const r = el.getBoundingClientRect();
+          const cx = r.left + r.width  / 2;
+          const cy = r.top  + r.height / 2;
+          const dx = (this._mx - cx) / (window.innerWidth  / 2);
+          const dy = (this._my - cy) / (window.innerHeight / 2);
+          const tx = dx * 10;
+          const ty = dy * 10;
+          const sx = (this._mx - cx) * 0.18;
+          const sy = (this._my - cy) * 0.18;
+          const dist = Math.sqrt(dx*dx + dy*dy);
+          const spread = Math.max(4, 28 - dist * 12);
+          el.style.textShadow = `${sx}px ${sy}px ${spread}px rgba(245,192,24,0.55), 0 0 60px rgba(245,192,24,0.18)`;
+          if (!this.state.evadeKey) {
+            el.style.transform = `translate(${tx}px,${ty}px)`;
+            el.style.transition = 'transform 0.12s ease-out, text-shadow 0.12s ease-out';
+          }
+        });
+      }
+    };
+
+    this._onLeave = () => {
+      const el = document.querySelector('[data-hero-title]');
+      if (!el) return;
+      el.style.transition = 'transform 0.6s cubic-bezier(.22,.68,0,1.1), text-shadow 0.6s ease';
+      el.style.textShadow = '';
+      if (!this.state.evadeKey) el.style.transform = 'translate(0,0)';
+    };
+
+    stage.addEventListener('mousemove', this._onMove);
+    stage.addEventListener('mouseleave', this._onLeave);
+  }
+
+  _detachGlow() {
+    if (this._glowStage) {
+      this._glowStage.removeEventListener('mousemove', this._onMove);
+      this._glowStage.removeEventListener('mouseleave', this._onLeave);
+      this._glowStage = null;
+    }
+  }
+
+  renderVals() {
+    const go = (url) => () => { window.location.href = url; };
+    const filled   = { border: 'none', borderRadius: '6px', background: 'var(--accent)', padding: '14px 32px', fontFamily: "'Space Grotesk', sans-serif", fontWeight: 700, fontSize: '15px', letterSpacing: '0.5px', color: 'var(--hl)', lineHeight: 1 };
+    const outlined = { border: '2px solid var(--accent)', borderRadius: '6px', background: 'transparent', padding: '12px 32px', fontFamily: "'Space Grotesk', sans-serif", fontWeight: 700, fontSize: '15px', letterSpacing: '0.5px', color: 'var(--accent)', lineHeight: 1 };
+    const pink     = { border: 'none', borderRadius: '6px', background: 'var(--hl)', padding: '14px 32px', fontFamily: "'Space Grotesk', sans-serif", fontWeight: 700, fontSize: '15px', letterSpacing: '0.5px', color: 'var(--accent)', lineHeight: 1 };
+    return {
+      homeTitle:   this._get('home','title'),
+      homeTagline: this._get('home','tagline'),
+      homeExtra:   this._get('home','extra'),
+      navMe:      this._get('nav','me'),
+      navProject: this._get('nav','project'),
+      navBlog:    this._get('nav','blog'),
+      navHi:      this._get('nav','hi'),
+      goMe:      go('KUNVAD-Me.dc.html'),
+      goProject: go('KUNVAD-Project.dc.html'),
+      goBlog:    go('KUNVAD-Blog.dc.html'),
+      goHi:      go('KUNVAD-Hi.dc.html'),
+      evadeMe:      () => this._evade('me'),
+      evadeProject: () => this._evade('project'),
+      evadeBlog:    () => this._evade('blog'),
+      evadeHi:      () => this._evade('hi'),
+      evadeTitle:   () => this._evade('title'),
+      styleMe:      this._btnStyle('me', filled),
+      styleProject: this._btnStyle('project', outlined),
+      styleBlog:    this._btnStyle('blog', pink),
+      styleHi:      this._btnStyle('hi', filled),
+      styleTitleEvade: this._btnStyle('title', { display: 'inline-block', cursor: 'default', fontFamily: "'Bebas Neue', serif", fontWeight: 400, fontSize: '140px', letterSpacing: '24px', color: 'var(--accent)', lineHeight: 1, textAlign: 'center' }),
+    };
+  }
+}
+</script>
+</body>
+</html>

@@ -1,0 +1,328 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="true" />
+  <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&family=Space+Grotesk:wght@300;400;600;700&display=swap" rel="stylesheet" />
+  <style>
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background: #0f0f17; color: #e8e8f0; font-family: 'Space Grotesk', sans-serif; overflow: hidden; }
+    input, textarea { font-family: 'Space Grotesk', sans-serif; }
+    input[type="color"] { -webkit-appearance: none; padding: 2px; }
+    input[type="color"]::-webkit-color-swatch-wrapper { padding: 2px; }
+    input[type="color"]::-webkit-color-swatch { border: none; border-radius: 4px; }
+    textarea { resize: vertical; }
+    ::-webkit-scrollbar { width: 5px; }
+    ::-webkit-scrollbar-thumb { background: rgba(255,255,255,0.12); border-radius: 3px; }
+    a { text-decoration: none; }
+  </style>
+</helmet>
+
+<!-- HEADER -->
+<header style="height:60px; background:#080810; border-bottom:1px solid rgba(255,255,255,0.07); display:flex; align-items:center; justify-content:space-between; padding:0 28px; flex-shrink:0;">
+  <div style="display:flex; align-items:center; gap:10px;">
+    <span style="font-family:'Bebas Neue',serif; font-size:22px; letter-spacing:6px; color:rgb(245,192,24);">KUNVAD</span>
+    <span style="font-size:10px; letter-spacing:2.5px; font-weight:600; color:rgba(255,255,255,0.3); background:rgba(255,255,255,0.05); padding:3px 9px; border-radius:20px; border:1px solid rgba(255,255,255,0.08);">CMS</span>
+  </div>
+  <div style="display:flex; gap:8px; align-items:center;">
+    <button onClick="{{ onExport }}" style="padding:7px 16px; border-radius:6px; background:rgba(245,192,24,0.1); border:1px solid rgba(245,192,24,0.25); color:rgb(245,192,24); font-family:'Space Grotesk',sans-serif; font-weight:600; font-size:12px; cursor:pointer;">↓ Export</button>
+    <label style="padding:7px 16px; border-radius:6px; background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); color:rgba(255,255,255,0.6); font-weight:600; font-size:12px; cursor:pointer; font-family:'Space Grotesk',sans-serif;">↑ Import<input type="file" accept=".json" onChange="{{ onImport }}" style="display:none;" /></label>
+    <a href="KUNVAD-Home.dc.html" target="_blank" style="padding:7px 16px; border-radius:6px; background:rgb(245,192,24); color:#080810; font-weight:700; font-size:12px; font-family:'Space Grotesk',sans-serif;">Visit Site →</a>
+  </div>
+</header>
+
+<!-- BODY -->
+<div style="display:flex; height:calc(100vh - 60px); overflow:hidden;">
+
+  <!-- LEFT: FORM PANEL -->
+  <div data-form-panel="true" style="width:44%; overflow-y:auto; padding:18px; display:flex; flex-direction:column; gap:14px; border-right:1px solid rgba(255,255,255,0.05);">
+
+    <!-- THEME COLORS -->
+    <div id="sec-theme" style="background:#1a1a26; border-radius:10px; border:1px solid rgba(255,255,255,0.07); padding:16px;">
+      <div style="font-family:'Bebas Neue',serif; font-size:14px; letter-spacing:3px; color:rgb(245,192,24); margin-bottom:12px; padding-bottom:9px; border-bottom:1px solid rgba(255,255,255,0.06);">THEME COLORS</div>
+      <div style="display:grid; grid-template-columns:1fr 1fr 1fr; gap:10px;">
+        <div>
+          <div style="font-size:10px; letter-spacing:1.5px; color:rgba(232,232,240,0.38); font-weight:600; margin-bottom:5px;">BACKGROUND</div>
+          <div style="display:flex; align-items:center; gap:7px; background:#11111c; border:1px solid rgba(255,255,255,0.08); border-radius:6px; padding:5px 9px;">
+            <input type="color" value="{{ bgHex }}" onChange="{{ onBgChange }}" style="width:24px; height:24px; border:none; background:none; border-radius:4px; cursor:pointer;" />
+            <span style="font-size:10px; color:rgba(232,232,240,0.45); font-family:monospace;">{{ bgHex }}</span>
+          </div>
+        </div>
+        <div>
+          <div style="font-size:10px; letter-spacing:1.5px; color:rgba(232,232,240,0.38); font-weight:600; margin-bottom:5px;">ACCENT</div>
+          <div style="display:flex; align-items:center; gap:7px; background:#11111c; border:1px solid rgba(255,255,255,0.08); border-radius:6px; padding:5px 9px;">
+            <input type="color" value="{{ accentHex }}" onChange="{{ onAccentChange }}" style="width:24px; height:24px; border:none; background:none; border-radius:4px; cursor:pointer;" />
+            <span style="font-size:10px; color:rgba(232,232,240,0.45); font-family:monospace;">{{ accentHex }}</span>
+          </div>
+        </div>
+        <div>
+          <div style="font-size:10px; letter-spacing:1.5px; color:rgba(232,232,240,0.38); font-weight:600; margin-bottom:5px;">HIGHLIGHT</div>
+          <div style="display:flex; align-items:center; gap:7px; background:#11111c; border:1px solid rgba(255,255,255,0.08); border-radius:6px; padding:5px 9px;">
+            <input type="color" value="{{ hlHex }}" onChange="{{ onHlChange }}" style="width:24px; height:24px; border:none; background:none; border-radius:4px; cursor:pointer;" />
+            <span style="font-size:10px; color:rgba(232,232,240,0.45); font-family:monospace;">{{ hlHex }}</span>
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- NAVIGATION -->
+    <div id="sec-nav" style="background:#1a1a26; border-radius:10px; border:1px solid rgba(255,255,255,0.07); padding:16px;">
+      <div style="font-family:'Bebas Neue',serif; font-size:14px; letter-spacing:3px; color:rgb(245,192,24); margin-bottom:12px; padding-bottom:9px; border-bottom:1px solid rgba(255,255,255,0.06);">NAVIGATION</div>
+      <div style="display:flex; flex-direction:column; gap:9px;">
+        <div>
+          <div style="font-size:10px; letter-spacing:1.5px; color:rgba(232,232,240,0.38); font-weight:600; margin-bottom:4px;">LOGO TEXT</div>
+          <input value="{{ navLogo }}" onChange="{{ onNavLogo }}" style="width:100%; padding:7px 11px; background:#11111c; border:1px solid rgba(255,255,255,0.1); border-radius:6px; color:#e8e8f0; font-size:13px; outline:none;" />
+        </div>
+        <div style="display:grid; grid-template-columns:1fr 1fr; gap:9px;">
+          <div>
+            <div style="font-size:10px; letter-spacing:1.5px; color:rgba(232,232,240,0.38); font-weight:600; margin-bottom:4px;">BTN — ME</div>
+            <input value="{{ navMe }}" onChange="{{ onNavMe }}" style="width:100%; padding:7px 11px; background:#11111c; border:1px solid rgba(255,255,255,0.1); border-radius:6px; color:#e8e8f0; font-size:13px; outline:none;" />
+          </div>
+          <div>
+            <div style="font-size:10px; letter-spacing:1.5px; color:rgba(232,232,240,0.38); font-weight:600; margin-bottom:4px;">BTN — PROJECT</div>
+            <input value="{{ navProject }}" onChange="{{ onNavProject }}" style="width:100%; padding:7px 11px; background:#11111c; border:1px solid rgba(255,255,255,0.1); border-radius:6px; color:#e8e8f0; font-size:13px; outline:none;" />
+          </div>
+          <div>
+            <div style="font-size:10px; letter-spacing:1.5px; color:rgba(232,232,240,0.38); font-weight:600; margin-bottom:4px;">BTN — BLOG</div>
+            <input value="{{ navBlog }}" onChange="{{ onNavBlog }}" style="width:100%; padding:7px 11px; background:#11111c; border:1px solid rgba(255,255,255,0.1); border-radius:6px; color:#e8e8f0; font-size:13px; outline:none;" />
+          </div>
+          <div>
+            <div style="font-size:10px; letter-spacing:1.5px; color:rgba(232,232,240,0.38); font-weight:600; margin-bottom:4px;">BTN — HI</div>
+            <input value="{{ navHi }}" onChange="{{ onNavHi }}" style="width:100%; padding:7px 11px; background:#11111c; border:1px solid rgba(255,255,255,0.1); border-radius:6px; color:#e8e8f0; font-size:13px; outline:none;" />
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <!-- HOME PAGE -->
+    <div id="sec-home" style="background:#1a1a26; border-radius:10px; border:1px solid rgba(255,255,255,0.07); padding:16px;">
+      <div style="font-family:'Bebas Neue',serif; font-size:14px; letter-spacing:3px; color:rgb(245,192,24); margin-bottom:12px; padding-bottom:9px; border-bottom:1px solid rgba(255,255,255,0.06);">HOME PAGE</div>
+      <div style="display:flex; flex-direction:column; gap:9px;">
+        <div>
+          <div style="font-size:10px; letter-spacing:1.5px; color:rgba(232,232,240,0.38); font-weight:600; margin-bottom:4px;">HERO TITLE</div>
+          <input value="{{ homeTitle }}" onChange="{{ onHomeTitle }}" style="width:100%; padding:7px 11px; background:#11111c; border:1px solid rgba(255,255,255,0.1); border-radius:6px; color:#e8e8f0; font-size:13px; outline:none;" />
+        </div>
+        <div>
+          <div style="font-size:10px; letter-spacing:1.5px; color:rgba(232,232,240,0.38); font-weight:600; margin-bottom:4px;">TAGLINE</div>
+          <input value="{{ homeTagline }}" onChange="{{ onHomeTagline }}" style="width:100%; padding:7px 11px; background:#11111c; border:1px solid rgba(255,255,255,0.1); border-radius:6px; color:#e8e8f0; font-size:13px; outline:none;" />
+        </div>
+        <div>
+          <div style="font-size:10px; letter-spacing:1.5px; color:rgba(232,232,240,0.38); font-weight:600; margin-bottom:4px;">EXTRA TEXT (top of page)</div>
+          <input value="{{ homeExtra }}" onChange="{{ onHomeExtra }}" style="width:100%; padding:7px 11px; background:#11111c; border:1px solid rgba(255,255,255,0.1); border-radius:6px; color:#e8e8f0; font-size:13px; outline:none;" />
+        </div>
+      </div>
+    </div>
+
+    <!-- IT'S ME PAGE -->
+    <div id="sec-me" style="background:#1a1a26; border-radius:10px; border:1px solid rgba(255,255,255,0.07); padding:16px;">
+      <div style="font-family:'Bebas Neue',serif; font-size:14px; letter-spacing:3px; color:rgb(245,192,24); margin-bottom:12px; padding-bottom:9px; border-bottom:1px solid rgba(255,255,255,0.06);">IT'S ME PAGE</div>
+      <div style="display:flex; flex-direction:column; gap:9px;">
+        <div>
+          <div style="font-size:10px; letter-spacing:1.5px; color:rgba(232,232,240,0.38); font-weight:600; margin-bottom:4px;">HEADING</div>
+          <input value="{{ meHeading }}" onChange="{{ onMeHeading }}" style="width:100%; padding:7px 11px; background:#11111c; border:1px solid rgba(255,255,255,0.1); border-radius:6px; color:#e8e8f0; font-size:13px; outline:none;" />
+        </div>
+        <div>
+          <div style="font-size:10px; letter-spacing:1.5px; color:rgba(232,232,240,0.38); font-weight:600; margin-bottom:4px;">SUBTITLE</div>
+          <input value="{{ meSubtitle }}" onChange="{{ onMeSubtitle }}" style="width:100%; padding:7px 11px; background:#11111c; border:1px solid rgba(255,255,255,0.1); border-radius:6px; color:#e8e8f0; font-size:13px; outline:none;" />
+        </div>
+        <div>
+          <div style="font-size:10px; letter-spacing:1.5px; color:rgba(232,232,240,0.38); font-weight:600; margin-bottom:4px;">BIO TEXT</div>
+          <textarea value="{{ meBody }}" onChange="{{ onMeBody }}" style="width:100%; padding:7px 11px; background:#11111c; border:1px solid rgba(255,255,255,0.1); border-radius:6px; color:#e8e8f0; font-size:13px; outline:none; min-height:90px;"></textarea>
+        </div>
+        <div>
+          <div style="font-size:10px; letter-spacing:1.5px; color:rgba(232,232,240,0.38); font-weight:600; margin-bottom:6px;">PROFILE IMAGE</div>
+          <label style="display:inline-flex; align-items:center; gap:7px; padding:7px 14px; border-radius:6px; background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); color:rgba(232,232,240,0.65); font-size:12px; font-weight:600; cursor:pointer; font-family:'Space Grotesk',sans-serif;">↑ Upload Image<input type="file" accept="image/*" onChange="{{ onMeImage }}" style="display:none;" /></label>
+          <sc-if value="{{ meImage }}" hint-placeholder-val="{{ false }}">
+            <div style="display:flex; align-items:center; gap:12px; margin-top:8px; padding:10px; background:#11111c; border-radius:8px; border:1px solid rgba(255,255,255,0.07);">
+              <img src="{{ meImageSrc }}" style="width:56px; height:56px; object-fit:cover; border-radius:7px;" />
+              <button onClick="{{ onRemoveImage }}" style="padding:5px 12px; border-radius:6px; background:rgba(255,70,70,0.1); border:1px solid rgba(255,70,70,0.2); color:rgba(255,120,120,0.85); font-size:11px; font-weight:600; cursor:pointer; font-family:'Space Grotesk',sans-serif;">Remove</button>
+            </div>
+          </sc-if>
+        </div>
+      </div>
+    </div>
+
+    <!-- BLOG PAGE -->
+    <div id="sec-blog" style="background:#1a1a26; border-radius:10px; border:1px solid rgba(255,255,255,0.07); padding:16px;">
+      <div style="font-family:'Bebas Neue',serif; font-size:14px; letter-spacing:3px; color:rgb(245,192,24); margin-bottom:12px; padding-bottom:9px; border-bottom:1px solid rgba(255,255,255,0.06);">BLOG PAGE</div>
+      <div style="display:flex; flex-direction:column; gap:9px;">
+        <div>
+          <div style="font-size:10px; letter-spacing:1.5px; color:rgba(232,232,240,0.38); font-weight:600; margin-bottom:4px;">HEADING</div>
+          <input value="{{ blogHeading }}" onChange="{{ onBlogHeading }}" style="width:100%; padding:7px 11px; background:#11111c; border:1px solid rgba(255,255,255,0.1); border-radius:6px; color:#e8e8f0; font-size:13px; outline:none;" />
+        </div>
+        <div>
+          <div style="font-size:10px; letter-spacing:1.5px; color:rgba(232,232,240,0.38); font-weight:600; margin-bottom:4px;">STATUS TEXT</div>
+          <input value="{{ blogStatus }}" onChange="{{ onBlogStatus }}" style="width:100%; padding:7px 11px; background:#11111c; border:1px solid rgba(255,255,255,0.1); border-radius:6px; color:#e8e8f0; font-size:13px; outline:none;" />
+        </div>
+      </div>
+    </div>
+
+    <!-- PROJECT PAGE -->
+    <div id="sec-project" style="background:#1a1a26; border-radius:10px; border:1px solid rgba(255,255,255,0.07); padding:16px;">
+      <div style="font-family:'Bebas Neue',serif; font-size:14px; letter-spacing:3px; color:rgb(245,192,24); margin-bottom:12px; padding-bottom:9px; border-bottom:1px solid rgba(255,255,255,0.06);">PROJECT PAGE</div>
+      <div style="display:flex; flex-direction:column; gap:9px;">
+        <div>
+          <div style="font-size:10px; letter-spacing:1.5px; color:rgba(232,232,240,0.38); font-weight:600; margin-bottom:4px;">HEADING</div>
+          <input value="{{ projectHeading }}" onChange="{{ onProjectHeading }}" style="width:100%; padding:7px 11px; background:#11111c; border:1px solid rgba(255,255,255,0.1); border-radius:6px; color:#e8e8f0; font-size:13px; outline:none;" />
+        </div>
+        <div>
+          <div style="font-size:10px; letter-spacing:1.5px; color:rgba(232,232,240,0.38); font-weight:600; margin-bottom:4px;">STATUS TEXT</div>
+          <input value="{{ projectStatus }}" onChange="{{ onProjectStatus }}" style="width:100%; padding:7px 11px; background:#11111c; border:1px solid rgba(255,255,255,0.1); border-radius:6px; color:#e8e8f0; font-size:13px; outline:none;" />
+        </div>
+      </div>
+    </div>
+
+    <!-- HI PAGE -->
+    <div id="sec-hi" style="background:#1a1a26; border-radius:10px; border:1px solid rgba(255,255,255,0.07); padding:16px;">
+      <div style="font-family:'Bebas Neue',serif; font-size:14px; letter-spacing:3px; color:rgb(245,192,24); margin-bottom:12px; padding-bottom:9px; border-bottom:1px solid rgba(255,255,255,0.06);">HI PAGE</div>
+      <div style="display:flex; flex-direction:column; gap:9px;">
+        <div>
+          <div style="font-size:10px; letter-spacing:1.5px; color:rgba(232,232,240,0.38); font-weight:600; margin-bottom:4px;">HEADING</div>
+          <input value="{{ hiHeading }}" onChange="{{ onHiHeading }}" style="width:100%; padding:7px 11px; background:#11111c; border:1px solid rgba(255,255,255,0.1); border-radius:6px; color:#e8e8f0; font-size:13px; outline:none;" />
+        </div>
+        <div>
+          <div style="font-size:10px; letter-spacing:1.5px; color:rgba(232,232,240,0.38); font-weight:600; margin-bottom:4px;">BODY TEXT</div>
+          <textarea value="{{ hiBody }}" onChange="{{ onHiBody }}" style="width:100%; padding:7px 11px; background:#11111c; border:1px solid rgba(255,255,255,0.1); border-radius:6px; color:#e8e8f0; font-size:13px; outline:none; min-height:80px;"></textarea>
+        </div>
+      </div>
+    </div>
+
+  </div>
+
+  <!-- RIGHT: PREVIEW PANEL -->
+  <div style="width:56%; display:flex; flex-direction:column; background:#0a0a12;">
+    <div style="padding:9px 14px; border-bottom:1px solid rgba(255,255,255,0.05); display:flex; gap:6px; align-items:center; flex-shrink:0; background:#080810;">
+      <span style="font-size:9px; letter-spacing:2px; color:rgba(255,255,255,0.22); font-weight:600; margin-right:4px;">PREVIEW</span>
+      <span style="font-size:9px; color:rgba(255,255,255,0.18); margin-left:auto; font-style:italic;">read-only — edit fields on the left ←</span>
+      <button style="{{ tabHome }}" onClick="{{ setHome }}">Home</button>
+      <button style="{{ tabMe }}" onClick="{{ setMe }}">Me</button>
+      <button style="{{ tabBlog }}" onClick="{{ setBlog }}">Blog</button>
+      <button style="{{ tabProject }}" onClick="{{ setProject }}">Project</button>
+      <button style="{{ tabHi }}" onClick="{{ setHi }}">Hi</button>
+    </div>
+    <iframe data-cms-preview="true" style="flex:1; border:none; width:100%; min-height:0; background:#fff;"></iframe>
+  </div>
+
+</div>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{ &quot;$preview&quot;: { &quot;width&quot;: 1440, &quot;height&quot;: 900 } }">
+class Component extends DCLogic {
+  _D = {
+    theme:   { bg: 'rgb(106,171,176)', accent: 'rgb(245,192,24)', hl: 'rgb(255,61,138)' },
+    nav:     { logo: 'KUNVAD', me: "It's me", project: "It's a Project", blog: "It's Blog", hi: 'Hi' },
+    home:    { title: 'KUNVAD', tagline: 'Wisdom in Nonsense', extra: 'Your text here' },
+    me:      { heading: "IT'S ME", subtitle: 'WISDOM IN NONSENSE', body: "Welcome! My name is Tap KunvaD. I'm a believer that you can find wisdom in nonsense. Here, I share a blend of my personal interests and my 12-year journey in fashion retail.", image: null },
+    blog:    { heading: "IT'S BLOG",    status: 'Nonsense Story is loading....' },
+    project: { heading: "IT'S A PROJECT", status: 'Nonsense thing is loading....' },
+    hi:      { heading: 'HI THERE',     body: 'Thanks for stopping by. Feel free to reach out — always happy to connect over nonsense.' },
+  };
+  _URLS = { home:'KUNVAD-Home.dc.html', me:'KUNVAD-Me.dc.html', blog:'KUNVAD-Blog.dc.html', project:'KUNVAD-Project.dc.html', hi:'KUNVAD-Hi.dc.html' };
+  state = { content: this._load(), preview: 'home' };
+  _setPreview(page) {
+    this.setState({ preview: page });
+    const f = document.querySelector('[data-cms-preview]');
+    if (f) f.src = this._URLS[page];
+    const secMap = { home: 'sec-home', me: 'sec-me', blog: 'sec-blog', project: 'sec-project', hi: 'sec-hi' };
+    const panel = document.querySelector('[data-form-panel]');
+    const sec = document.getElementById(secMap[page]);
+    if (panel && sec) panel.scrollTop = sec.offsetTop - 18;
+  }
+
+  componentDidMount() {
+    const f = document.querySelector('[data-cms-preview]');
+    if (f) f.src = this._URLS[this.state.preview];
+  }
+  _load() { try { return JSON.parse(localStorage.getItem('kunvad_cms') || '{}'); } catch(e) { return {}; } }
+  _get(s, k) { const c = this.state.content; return (c[s] && c[s][k] !== undefined) ? c[s][k] : this._D[s][k]; }
+  _save(content) {
+    try { localStorage.setItem('kunvad_cms', JSON.stringify(content)); } catch(e) {}
+    this.setState({ content });
+  }
+  _set(s, k, v) {
+    const c = JSON.parse(JSON.stringify(this.state.content));
+    if (!c[s]) c[s] = {};
+    c[s][k] = v;
+    this._save(c);
+  }
+  _rgbToHex(rgb) {
+    const m = String(rgb).match(/rgb\((\d+),\s*(\d+),\s*(\d+)\)/);
+    if (!m) return '#6aabb0';
+    return '#' + [m[1],m[2],m[3]].map(x => parseInt(x).toString(16).padStart(2,'0')).join('');
+  }
+  _hexToRgb(hex) {
+    const r = parseInt(hex.slice(1,3),16), g = parseInt(hex.slice(3,5),16), b = parseInt(hex.slice(5,7),16);
+    return `rgb(${r},${g},${b})`;
+  }
+  _export() {
+    const blob = new Blob([JSON.stringify(this.state.content, null, 2)], { type: 'application/json' });
+    const url = URL.createObjectURL(blob);
+    const a = document.createElement('a'); a.href = url; a.download = 'kunvad-content.json'; a.click();
+    URL.revokeObjectURL(url);
+  }
+  _import(e) {
+    const file = e.target.files[0]; if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (ev) => { try { this._save(JSON.parse(ev.target.result)); } catch(err) { alert('Invalid JSON file'); } };
+    reader.readAsText(file);
+    e.target.value = '';
+  }
+  _uploadImage(e) {
+    const file = e.target.files[0]; if (!file) return;
+    const reader = new FileReader();
+    reader.onload = (ev) => this._set('me', 'image', ev.target.result);
+    reader.readAsDataURL(file);
+    e.target.value = '';
+  }
+  _tab(p) {
+    const active = this.state.preview === p;
+    return { padding: '5px 13px', borderRadius: '6px', border: 'none', cursor: 'pointer', fontFamily: "'Space Grotesk',sans-serif", fontWeight: 600, fontSize: '11px', background: active ? 'rgb(245,192,24)' : 'rgba(255,255,255,0.05)', color: active ? '#080810' : 'rgba(255,255,255,0.4)', transition: 'all 0.15s' };
+  }
+  renderVals() {
+    const g = (s, k) => this._get(s, k);
+    const urls = { home:'KUNVAD-Home.dc.html', me:'KUNVAD-Me.dc.html', blog:'KUNVAD-Blog.dc.html', project:'KUNVAD-Project.dc.html', hi:'KUNVAD-Hi.dc.html' };
+    return {
+      bgHex: this._rgbToHex(g('theme','bg')), accentHex: this._rgbToHex(g('theme','accent')), hlHex: this._rgbToHex(g('theme','hl')),
+      onBgChange:     (e) => this._set('theme','bg',     this._hexToRgb(e.target.value)),
+      onAccentChange: (e) => this._set('theme','accent', this._hexToRgb(e.target.value)),
+      onHlChange:     (e) => this._set('theme','hl',     this._hexToRgb(e.target.value)),
+      navLogo: g('nav','logo'), onNavLogo:    (e) => this._set('nav','logo',    e.target.value),
+      navMe:   g('nav','me'),   onNavMe:      (e) => this._set('nav','me',      e.target.value),
+      navProject: g('nav','project'), onNavProject: (e) => this._set('nav','project', e.target.value),
+      navBlog: g('nav','blog'), onNavBlog:    (e) => this._set('nav','blog',    e.target.value),
+      navHi:   g('nav','hi'),   onNavHi:      (e) => this._set('nav','hi',      e.target.value),
+      homeTitle:   g('home','title'),   onHomeTitle:   (e) => this._set('home','title',   e.target.value),
+      homeTagline: g('home','tagline'), onHomeTagline: (e) => this._set('home','tagline', e.target.value),
+      homeExtra:   g('home','extra'),   onHomeExtra:   (e) => this._set('home','extra',   e.target.value),
+      meHeading:  g('me','heading'),  onMeHeading:  (e) => this._set('me','heading',  e.target.value),
+      meSubtitle: g('me','subtitle'), onMeSubtitle: (e) => this._set('me','subtitle', e.target.value),
+      meBody:     g('me','body'),     onMeBody:     (e) => this._set('me','body',     e.target.value),
+      meImage:    g('me','image'),    meImageSrc: g('me','image') || '',  onMeImage: (e) => this._uploadImage(e),
+      onRemoveImage: () => this._set('me','image', null),
+      blogHeading: g('blog','heading'), onBlogHeading: (e) => this._set('blog','heading', e.target.value),
+      blogStatus:  g('blog','status'),  onBlogStatus:  (e) => this._set('blog','status',  e.target.value),
+      projectHeading: g('project','heading'), onProjectHeading: (e) => this._set('project','heading', e.target.value),
+      projectStatus:  g('project','status'),  onProjectStatus:  (e) => this._set('project','status',  e.target.value),
+      hiHeading: g('hi','heading'), onHiHeading: (e) => this._set('hi','heading', e.target.value),
+      hiBody:    g('hi','body'),    onHiBody:    (e) => this._set('hi','body',    e.target.value),
+      previewSrc: urls[this.state.preview],
+      tabHome: this._tab('home'), tabMe: this._tab('me'), tabBlog: this._tab('blog'), tabProject: this._tab('project'), tabHi: this._tab('hi'),
+      setHome:    () => this._setPreview('home'),
+      setMe:      () => this._setPreview('me'),
+      setBlog:    () => this._setPreview('blog'),
+      setProject: () => this._setPreview('project'),
+      setHi:      () => this._setPreview('hi'),
+      onExport: () => this._export(),
+      onImport: (e) => this._import(e),
+    };
+  }
+}
+</script>
+</body>
+</html>

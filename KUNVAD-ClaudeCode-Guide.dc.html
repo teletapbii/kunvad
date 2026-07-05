@@ -1,0 +1,206 @@
+<!DOCTYPE html>
+<html>
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<script src="./support.js"></script>
+</head>
+<body>
+<x-dc>
+<helmet>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@300;400;600;700&family=JetBrains+Mono:wght@400;600&display=swap" rel="stylesheet" />
+  <style>
+    doc-page:not(:defined) { visibility: hidden; }
+    doc-page { --accent: #1a56db; }
+    h1 { font-size: 28px; font-weight: 700; color: #0f172a; margin-bottom: 4px; }
+    h2 { font-size: 16px; font-weight: 700; color: #1a56db; letter-spacing: 0.5px; margin: 28px 0 10px; text-transform: uppercase; border-bottom: 2px solid #e0eaff; padding-bottom: 6px; }
+    h3 { font-size: 14px; font-weight: 700; color: #0f172a; margin: 16px 0 6px; }
+    p, li { font-size: 14px; line-height: 1.65; color: #334155; }
+    ul, ol { padding-left: 20px; margin: 6px 0 12px; }
+    li { margin-bottom: 4px; }
+    code { font-family: 'JetBrains Mono', monospace; font-size: 12px; background: #f1f5f9; color: #1e293b; padding: 2px 6px; border-radius: 4px; border: 1px solid #e2e8f0; }
+    pre { background: #0f172a; border-radius: 8px; padding: 14px 16px; margin: 10px 0 14px; overflow-x: auto; }
+    pre code { background: none; border: none; color: #e2e8f0; font-size: 12px; line-height: 1.7; padding: 0; }
+    .step { display: flex; gap: 12px; margin-bottom: 18px; break-inside: avoid; }
+    .step-num { flex-shrink: 0; width: 26px; height: 26px; border-radius: 50%; background: #1a56db; color: #fff; font-size: 12px; font-weight: 700; display: flex; align-items: center; justify-content: center; margin-top: 1px; }
+    .step-body { flex: 1; }
+    .step-body strong { font-size: 14px; color: #0f172a; display: block; margin-bottom: 3px; }
+    .callout { background: #f0f7ff; border-left: 3px solid #1a56db; border-radius: 0 6px 6px 0; padding: 10px 14px; margin: 12px 0; font-size: 13px; color: #1e3a5f; }
+    .tag { display: inline-block; font-size: 11px; font-weight: 700; letter-spacing: 0.8px; background: #e0eaff; color: #1a56db; padding: 2px 8px; border-radius: 20px; margin-bottom: 8px; }
+    .divider { border: none; border-top: 1px solid #e2e8f0; margin: 24px 0; }
+    .meta { font-size: 12px; color: #94a3b8; margin-top: 2px; }
+  </style>
+</helmet>
+
+<x-import component-from-global-scope="doc-page" from="./doc-page.js" hint-size="100%,100%">
+
+  <h1>Claude Code × GitHub × Vercel</h1>
+  <p class="meta">Development &amp; Deployment Workflow — KUNVAD Project</p>
+
+  <h2>Overview</h2>
+  <p>This guide walks you from downloading the current project files all the way to a live auto-deploy on Vercel, with Claude Code handling file edits via natural language in the terminal.</p>
+
+  <div class="callout">
+    <strong>Stack:</strong> Static HTML/DC files · GitHub (source of truth) · Vercel (hosting) · Claude Code CLI (AI editing)
+  </div>
+
+  <hr class="divider" />
+  <h2>Phase 1 — One-Time Setup</h2>
+
+  <div class="step">
+    <div class="step-num">1</div>
+    <div class="step-body">
+      <strong>Download the project</strong>
+      Export the project as a ZIP from this tool, unzip it into a local folder named <code>kunvad</code>.
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-num">2</div>
+    <div class="step-body">
+      <strong>Initialize Git &amp; push to GitHub</strong>
+      <pre><code>cd kunvad
+git init
+git add .
+git commit -m "initial commit"
+gh repo create kunvad --public --source=. --push
+# or: git remote add origin https://github.com/YOU/kunvad.git && git push -u origin main</code></pre>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-num">3</div>
+    <div class="step-body">
+      <strong>Connect Vercel to the repo</strong>
+      <ol>
+        <li>Go to <code>vercel.com/new</code> → Import Git repository → select <code>kunvad</code></li>
+        <li>Framework: <strong>Other</strong> (static files, no build step)</li>
+        <li>Output directory: leave blank (<code>./</code>)</li>
+        <li>Click <strong>Deploy</strong> — Vercel will auto-deploy on every push to <code>main</code></li>
+      </ol>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-num">4</div>
+    <div class="step-body">
+      <strong>Install Claude Code CLI</strong>
+      <pre><code>npm install -g @anthropic-ai/claude-code</code></pre>
+      Requires Node 18+. Authenticate once:
+      <pre><code>claude auth login</code></pre>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-num">5</div>
+    <div class="step-body">
+      <strong>Write a CLAUDE.md context file</strong>
+      Place <code>CLAUDE.md</code> in the project root — Claude Code reads it automatically at the start of every session:
+      <pre><code># KUNVAD Project
+
+## Files
+- KUNVAD-Home.dc.html     — Home page (hero, evasive buttons)
+- KUNVAD-Me.dc.html       — About page
+- KUNVAD-Blog.dc.html     — Blog page
+- KUNVAD-Project.dc.html  — Project page
+- KUNVAD-Hi.dc.html       — Hi/Contact page
+- KUNVAD-CMS.dc.html      — Content management panel
+
+## Content
+All editable content is stored in browser localStorage under the key
+`kunvad_cms`. Static defaults live in each page's `_D` object.
+
+## Deploy
+git push origin main → Vercel auto-deploys.</code></pre>
+    </div>
+  </div>
+
+  <hr class="divider" />
+  <h2>Phase 2 — Daily Edit Workflow</h2>
+
+  <div class="step">
+    <div class="step-num">6</div>
+    <div class="step-body">
+      <strong>Start a Claude Code session</strong>
+      <pre><code>cd kunvad
+claude</code></pre>
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-num">7</div>
+    <div class="step-body">
+      <strong>Prompt Claude Code to edit files</strong>
+      Natural language works. Examples:
+      <pre><code># Change blog page heading
+"In KUNVAD-Blog.dc.html, change the default blogHeading
+ in _D from IT'S BLOG to STORIES."
+
+# Add a new nav link
+"Add a 'Contact' link to the nav in all inner pages
+ pointing to mailto:tap@kunvad.com"
+
+# Update CMS default bio text
+"In KUNVAD-Me.dc.html update the default body text
+ in _D.me to: [your new bio here]"</code></pre>
+      Claude Code will read the file, make the targeted change, and show a diff for approval.
+    </div>
+  </div>
+
+  <div class="step">
+    <div class="step-num">8</div>
+    <div class="step-body">
+      <strong>Review the diff, then commit &amp; push</strong>
+      <pre><code>git add .
+git commit -m "update blog heading + me bio"
+git push origin main</code></pre>
+      Vercel picks up the push and deploys in ~30 seconds.
+    </div>
+  </div>
+
+  <hr class="divider" />
+  <h2>Phase 3 — Useful Prompt Patterns</h2>
+
+  <h3>Edit default content (visible before CMS override)</h3>
+  <pre><code>"In KUNVAD-Hi.dc.html, change _D.hi.body to: [new text]"</code></pre>
+
+  <h3>Change theme defaults</h3>
+  <pre><code>"In all KUNVAD-*.dc.html files, change the default
+ accent color in _D.theme from rgb(245,192,24) to rgb(255,180,0)"</code></pre>
+
+  <h3>Add a new page</h3>
+  <pre><code>"Create KUNVAD-Work.dc.html following the same pattern
+ as KUNVAD-Blog.dc.html, with heading WORK and
+ status 'Coming soon'. Add it to the nav in all pages."</code></pre>
+
+  <h3>Deploy with a message</h3>
+  <pre><code>"After editing, run: git add . && git commit -m 'add work page' && git push"</code></pre>
+
+  <div class="callout">
+    <strong>Tip:</strong> You can ask Claude Code to do the git commit and push in the same prompt — e.g. <em>"Make the change and push to GitHub."</em> It will stage, commit, and push automatically.
+  </div>
+
+  <hr class="divider" />
+  <h2>Quick Reference</h2>
+  <table style="width:100%; border-collapse:collapse; font-size:13px; margin-top:6px;">
+    <thead>
+      <tr style="background:#f8fafc;">
+        <th style="text-align:left; padding:8px 10px; border:1px solid #e2e8f0; color:#0f172a;">Task</th>
+        <th style="text-align:left; padding:8px 10px; border:1px solid #e2e8f0; color:#0f172a;">Command / Prompt</th>
+      </tr>
+    </thead>
+    <tbody>
+      <tr><td style="padding:7px 10px; border:1px solid #e2e8f0;">Start session</td><td style="padding:7px 10px; border:1px solid #e2e8f0; font-family:monospace; font-size:12px;">claude</td></tr>
+      <tr style="background:#f8fafc;"><td style="padding:7px 10px; border:1px solid #e2e8f0;">Edit a file</td><td style="padding:7px 10px; border:1px solid #e2e8f0; font-family:monospace; font-size:12px;">"In KUNVAD-Blog.dc.html, change X to Y"</td></tr>
+      <tr><td style="padding:7px 10px; border:1px solid #e2e8f0;">Commit &amp; deploy</td><td style="padding:7px 10px; border:1px solid #e2e8f0; font-family:monospace; font-size:12px;">git add . &amp;&amp; git commit -m "..." &amp;&amp; git push</td></tr>
+      <tr style="background:#f8fafc;"><td style="padding:7px 10px; border:1px solid #e2e8f0;">Check Vercel status</td><td style="padding:7px 10px; border:1px solid #e2e8f0; font-family:monospace; font-size:12px;">vercel ls</td></tr>
+      <tr><td style="padding:7px 10px; border:1px solid #e2e8f0;">Preview locally</td><td style="padding:7px 10px; border:1px solid #e2e8f0; font-family:monospace; font-size:12px;">npx serve . (opens on localhost:3000)</td></tr>
+    </tbody>
+  </table>
+
+</x-import>
+</x-dc>
+<script type="text/x-dc" data-dc-script data-props="{ &quot;$preview&quot;: { &quot;width&quot;: 850, &quot;height&quot;: 1100 } }"></script>
+</body>
+</html>
