@@ -1,5 +1,5 @@
 {
-  "theme": { "bg": "rgb(106,171,176)", "accent": "rgb(245,192,24)", "hl": "rgb(195,209,23)" },
+  "theme": { "bg": "rgb(106,171,176)", "accent": "rgb(245,192,24)", "hl": "rgb(255,61,138)" },
   "nav": { "logo": "KUNVAD", "me": "It's me", "project": "It's a Project", "blog": "It's Blog", "hi": "Hi" },
   "home": { "title": "KUNVAD", "tagline": "Wisdom in Nonsense", "extra": "" },
   "me": {
