@@ -12,120 +12,110 @@
   <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin="true">
   <link href="https://fonts.googleapis.com/css2?family=Bebas+Neue&amp;family=Space+Grotesk:wght@300;400;700&amp;display=swap" rel="stylesheet">
   <style>
-    :root { --kunvad-bg: rgb(106,171,176); --kunvad-accent: rgb(245,192,24); --kunvad-hl: rgb(255,61,138); }
-    @keyframes slideInRight {
-      from { opacity: 0; transform: translateX(40px); }
-      to   { opacity: 1; transform: translateX(0); }
-    }
+    :root { --bg: rgb(106,171,176); --accent: rgb(245,192,24); --hl: rgb(255,61,138); }
+    * { box-sizing: border-box; margin: 0; padding: 0; }
+    body { background: var(--bg); min-height: 100vh; }
     @keyframes heroFade {
       from { opacity: 0; transform: translateY(24px); }
       to   { opacity: 1; transform: translateY(0); }
     }
-    * { box-sizing: border-box; margin: 0; padding: 0; }
-    body { background: var(--kunvad-bg); min-height: 100vh; }
-    .page { animation: slideInRight 0.35s cubic-bezier(.22,.68,0,1.2) both; }
     .hero-title { animation: heroFade 0.6s cubic-bezier(.22,.68,0,1.2) both; }
     .hero-sub   { animation: heroFade 0.6s 0.1s cubic-bezier(.22,.68,0,1.2) both; }
     .hero-nav   { animation: heroFade 0.6s 0.2s cubic-bezier(.22,.68,0,1.2) both; }
   </style>
 </helmet>
 
-<div style="width: 100%; min-height: 100vh; background: var(--kunvad-bg);">
+<div data-home-stage="true" style="width: 100%; min-height: 100vh; background: var(--bg); display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 48px; padding: 80px 64px;">
 
-  <!-- TOP NAV BAR (inner pages only) -->
-  <sc-if value="{{ showInner }}" hint-placeholder-val="{{ false }}">
-    <nav style="position: fixed; top: 0; left: 0; right: 0; z-index: 100; display: flex; align-items: center; justify-content: space-between; padding: 0 64px; height: 64px; background: var(--kunvad-bg); border-bottom: 1px solid rgba(245,192,24,0.2);">
-      <button onClick="{{ goHome }}" style="background: none; border: none; cursor: pointer; font-family: 'Bebas Neue', serif; font-size: 28px; letter-spacing: 6px; color: var(--kunvad-accent); line-height: 1;">KUNVAD</button>
-      <div style="display: flex; gap: 12px; align-items: center;">
-        <button onClick="{{ goMe }}" style="border: none; cursor: pointer; border-radius: 6px; background: var(--kunvad-accent); padding: 9px 20px; font-family: 'Space Grotesk', sans-serif; font-weight: 700; font-size: 13px; letter-spacing: 0.5px; color: var(--kunvad-hl); transition: transform 0.15s, opacity 0.15s;" style-hover="transform:scale(1.04);opacity:0.9;">It's me</button>
-        <button onClick="{{ goProject }}" style="border: 2px solid var(--kunvad-accent); cursor: pointer; border-radius: 6px; background: transparent; padding: 7px 20px; font-family: 'Space Grotesk', sans-serif; font-weight: 700; font-size: 13px; letter-spacing: 0.5px; color: var(--kunvad-accent); transition: transform 0.15s, opacity 0.15s;" style-hover="transform:scale(1.04);opacity:0.9;">It's a Project</button>
-        <button onClick="{{ goBlog }}" style="border: none; cursor: pointer; border-radius: 6px; background: var(--kunvad-hl); padding: 9px 20px; font-family: 'Space Grotesk', sans-serif; font-weight: 700; font-size: 13px; letter-spacing: 0.5px; color: var(--kunvad-accent); transition: transform 0.15s, opacity 0.15s;" style-hover="transform:scale(1.04);opacity:0.9;">It's Blog</button>
-        <button onClick="{{ goHi }}" style="border: none; cursor: pointer; border-radius: 6px; background: var(--kunvad-accent); padding: 9px 20px; font-family: 'Space Grotesk', sans-serif; font-weight: 700; font-size: 13px; letter-spacing: 0.5px; color: var(--kunvad-hl); transition: transform 0.15s, opacity 0.15s;" style-hover="transform:scale(1.04);opacity:0.9;">Hi</button>
-      </div>
-    </nav>
-  </sc-if>
+  <!-- Title with glow + evasive -->
+  <div style="display: flex; flex-direction: column; align-items: center; gap: 10px;">
+    <span class="hero-title" data-hero-title="true" onMouseEnter="{{ evadeTitle }}" style="{{ styleTitleEvade }}">{{ homeTitle }}</span>
+    <span class="hero-sub" style="font-family: 'Space Grotesk', sans-serif; font-weight: 300; font-size: 18px; letter-spacing: 4px; color: var(--accent); line-height: 1; text-align: center;">{{ homeTagline }}</span>
+  </div>
 
-  <!-- HOME PAGE -->
-  <sc-if value="{{ showHome }}" hint-placeholder-val="{{ true }}">
-    <div class="page" data-home-stage="true" style="width: 100%; min-height: 100vh; display: flex; flex-direction: column; align-items: center; justify-content: center; gap: 48px; padding: 80px 64px;">
-      <div style="display: flex; flex-direction: column; align-items: center; gap: 10px;">
-        <span class="hero-title" data-hero-title="true" onMouseEnter="{{ evadeTitle }}" style="{{ styleTitleEvade }}">KUNVAD</span>
-        <span class="hero-sub" style="font-family: 'Space Grotesk', sans-serif; font-weight: 300; font-size: 18px; letter-spacing: 4px; color: #FF3D8A; line-height: 1; text-align: center">Wisdom in Nonsense</span>
-      </div>
-      <div class="hero-nav" style="display: flex; flex-direction: row; gap: 16px; align-items: center;">
-        <button onClick="{{ goMe }}" onMouseEnter="{{ evadeMe }}" style="{{ styleMe }}">It's me</button>
-        <button onClick="{{ goProject }}" onMouseEnter="{{ evadeProject }}" style="{{ styleProject }}">It's a Project</button>
-        <button onClick="{{ goBlog }}" onMouseEnter="{{ evadeBlog }}" style="{{ styleBlog }}">It's Blog</button>
-        <button onClick="{{ goHi }}" onMouseEnter="{{ evadeHi }}" style="{{ styleHi }}">Hi</button>
-      </div>
-    </div>
-  </sc-if>
-
-  <!-- IT'S ME PAGE -->
-  <sc-if value="{{ showMe }}" hint-placeholder-val="{{ false }}">
-    <div class="page" style="width: 100%; min-height: 100vh; padding: 120px 64px 80px; display: flex; align-items: flex-start; justify-content: center;">
-      <div style="width: 100%; max-width: 860px; display: flex; flex-direction: column; gap: 24px;">
-        <span style="font-family: 'Bebas Neue', serif; font-weight: 400; font-size: 96px; letter-spacing: 14px; color: var(--kunvad-accent); line-height: 1;">KUNVAD</span>
-        <span style="font-family: 'Space Grotesk', sans-serif; font-weight: 700; font-size: 13px; letter-spacing: 4px; color: var(--kunvad-hl); line-height: 1;">WISDOM IN NONSENSE</span>
-        <div style="width: 64px; height: 3px; border-radius: 2px; background: var(--kunvad-hl);"></div>
-        <p style="font-family: 'Space Grotesk', sans-serif; font-weight: 300; font-size: 20px; line-height: 1.7; color: rgba(255,255,255,0.92); max-width: 560px;">Welcome! My name is Tap KunvaD. I'm a believer that you can find wisdom in nonsense. Here, I share a blend of my personal interests and my 12-year journey in fashion retail.</p>
-      </div>
-    </div>
-  </sc-if>
-
-  <!-- IT'S BLOG PAGE -->
-  <sc-if value="{{ showBlog }}" hint-placeholder-val="{{ false }}">
-    <div class="page" style="width: 100%; min-height: 100vh; padding: 120px 64px 80px; display: flex; align-items: flex-start; justify-content: center;">
-      <div style="width: 100%; max-width: 860px; display: flex; flex-direction: column; gap: 16px;">
-        <span style="font-family: 'Bebas Neue', serif; font-weight: 400; font-size: 72px; letter-spacing: 8px; color: var(--kunvad-accent); line-height: 1;">IT'S BLOG</span>
-        <span style="font-family: 'Bebas Neue', serif; font-weight: 400; font-size: 16px; letter-spacing: 6px; color: var(--kunvad-accent); line-height: 1;">Nonsense Story is loading....</span>
-      </div>
-    </div>
-  </sc-if>
-
-  <!-- IT'S A PROJECT PAGE -->
-  <sc-if value="{{ showProject }}" hint-placeholder-val="{{ false }}">
-    <div class="page" style="width: 100%; min-height: 100vh; padding: 120px 64px 80px; display: flex; align-items: flex-start; justify-content: center;">
-      <div style="width: 100%; max-width: 860px; display: flex; flex-direction: column; gap: 16px;">
-        <span style="font-family: 'Bebas Neue', serif; font-weight: 400; font-size: 72px; letter-spacing: 8px; color: var(--kunvad-accent); line-height: 1;">IT'S A PROJECT</span>
-        <span style="font-family: 'Bebas Neue', serif; font-weight: 400; font-size: 16px; letter-spacing: 6px; color: var(--kunvad-accent); line-height: 1;">Nonsense thing is loading....</span>
-      </div>
-    </div>
-  </sc-if>
-
-  <!-- HI PAGE -->
-  <sc-if value="{{ showHi }}" hint-placeholder-val="{{ false }}">
-    <div class="page" style="width: 100%; min-height: 100vh; padding: 120px 64px 80px; display: flex; align-items: flex-start; justify-content: center;">
-      <div style="width: 100%; max-width: 860px; display: flex; flex-direction: column; gap: 24px;">
-        <span style="font-family: 'Bebas Neue', serif; font-weight: 400; font-size: 72px; letter-spacing: 8px; color: var(--kunvad-accent); line-height: 1;">HI THERE</span>
-        <div style="width: 64px; height: 3px; border-radius: 2px; background: var(--kunvad-hl);"></div>
-        <p style="font-family: 'Space Grotesk', sans-serif; font-weight: 300; font-size: 20px; line-height: 1.7; color: rgba(255,255,255,0.92); max-width: 480px;">Thanks for stopping by. Feel free to reach out — always happy to connect over nonsense.<br>Explore my 9-5 experience : <a href="https://www.linkedin.com/in/kunvad">🥸</a></p>
-      </div>
-    </div>
-  </sc-if>
+  <!-- Evasive nav buttons -->
+  <div class="hero-nav" style="display: flex; flex-direction: row; gap: 16px; align-items: center;">
+    <button onMouseEnter="{{ evadeMe }}" onClick="{{ goMe }}" style="{{ styleMe }}">{{ navMe }}</button>
+    <button onMouseEnter="{{ evadeProject }}" onClick="{{ goProject }}" style="{{ styleProject }}">{{ navProject }}</button>
+    <button onMouseEnter="{{ evadeBlog }}" onClick="{{ goBlog }}" style="{{ styleBlog }}">{{ navBlog }}</button>
+    <button onMouseEnter="{{ evadeHi }}" onClick="{{ goHi }}" style="{{ styleHi }}">{{ navHi }}</button>
+  </div>
 
 </div>
-</x-dc>
-<script type="text/x-dc" data-dc-script data-props="{
-  &quot;$preview&quot;: { &quot;width&quot;: 1280, &quot;height&quot;: 800 },
-  &quot;bgColor&quot;:        { &quot;editor&quot;: &quot;color&quot;, &quot;section&quot;: &quot;Theme&quot;, &quot;default&quot;: &quot;rgb(106,171,176)&quot;, &quot;options&quot;: [&quot;rgb(106,171,176)&quot;, &quot;rgb(45,65,85)&quot;, &quot;rgb(60,55,80)&quot;, &quot;rgb(80,120,90)&quot;] },
-  &quot;accentColor&quot;:    { &quot;editor&quot;: &quot;color&quot;, &quot;section&quot;: &quot;Theme&quot;, &quot;default&quot;: &quot;rgb(245,192,24)&quot;,  &quot;options&quot;: [&quot;rgb(245,192,24)&quot;, &quot;rgb(255,255,255)&quot;, &quot;rgb(200,230,120)&quot;, &quot;rgb(255,200,160)&quot;] },
-  &quot;highlightColor&quot;: { &quot;editor&quot;: &quot;color&quot;, &quot;section&quot;: &quot;Theme&quot;, &quot;default&quot;: &quot;rgb(255,61,138)&quot;,  &quot;options&quot;: [&quot;rgb(255,61,138)&quot;, &quot;rgb(80,160,255)&quot;, &quot;rgb(255,120,50)&quot;, &quot;rgb(180,100,255)&quot;] }
-}">
+<div style="font-size: 16px; line-height: 1; font-family: 'Bebas Neue', serif; position: absolute; left: 391px; top: 53px">{{ homeExtra }}</div></x-dc>
+<script type="text/x-dc" data-dc-script data-props="{ &quot;$preview&quot;: { &quot;width&quot;: 1280, &quot;height&quot;: 800 } }">
 class Component extends DCLogic {
-  state = { page: 'home', evadeKey: null, evadeX: 0, evadeY: 0 };
+  _D = {
+    theme: { bg: 'rgb(106,171,176)', accent: 'rgb(245,192,24)', hl: 'rgb(255,61,138)' },
+    nav:   { logo: 'KUNVAD', me: "It's me", project: "It's a Project", blog: "It's Blog", hi: 'Hi' },
+    home:  { title: 'KUNVAD', tagline: 'Wisdom in Nonsense', extra: 'Your text here' },
+  };
+  state = { evadeKey: null, evadeX: 0, evadeY: 0, cms: this._loadLocal() };
   _evadeTimer = null;
 
-  _applyColors() {
+  _loadLocal() { try { return JSON.parse(localStorage.getItem('kunvad_cms') || '{}'); } catch(e) { return {}; } }
+  _merge(published, local) {
+    const out = {};
+    Object.keys(Object.assign({}, published, local)).forEach(k => {
+      out[k] = Object.assign({}, (published || {})[k], (local || {})[k]);
+    });
+    return out;
+  }
+  _get(s, k) { const c = this.state.cms; return (c[s] && c[s][k] !== undefined) ? c[s][k] : (this._D[s] || {})[k]; }
+  _applyTheme() {
     const r = document.documentElement;
-    r.style.setProperty('--kunvad-bg',     this.props.bgColor        ?? 'rgb(106,171,176)');
-    r.style.setProperty('--kunvad-accent', this.props.accentColor    ?? 'rgb(245,192,24)');
-    r.style.setProperty('--kunvad-hl',     this.props.highlightColor ?? 'rgb(255,61,138)');
+    r.style.setProperty('--bg',     this._get('theme','bg'));
+    r.style.setProperty('--accent', this._get('theme','accent'));
+    r.style.setProperty('--hl',     this._get('theme','hl'));
   }
 
-  componentDidMount()  { this._applyColors(); this._attachGlow(); }
-  componentDidUpdate() { this._applyColors(); this._attachGlow(); }
-  componentWillUnmount() { this._detachGlow(); }
+  componentDidMount() {
+    this._onStorage = () => this.setState({ cms: this._merge(this._published, this._loadLocal()) });
+    window.addEventListener('storage', this._onStorage);
+    fetch('content.json').then(r => r.ok ? r.json() : {}).catch(() => ({})).then(pub => {
+      this._published = pub;
+      this.setState({ cms: this._merge(pub, this._loadLocal()) });
+    });
+    this._applyTheme();
+    this._attachGlow();
+  }
+  componentDidUpdate() {
+    this._applyTheme();
+    const stage = document.querySelector('[data-home-stage]');
+    if (stage !== this._glowStage) this._attachGlow();
+  }
+  componentWillUnmount() {
+    window.removeEventListener('storage', this._onStorage);
+    this._detachGlow();
+  }
+
+  _evade(key) {
+    if (this._evadeTimer) clearTimeout(this._evadeTimer);
+    const offsets = [
+      { x: 60, y: 0 }, { x: -60, y: 0 },
+      { x: 0, y: 44 }, { x: 0, y: -44 },
+      { x: 48, y: 32 }, { x: -48, y: -32 },
+      { x: -48, y: 32 }, { x: 48, y: -32 },
+    ];
+    const o = offsets[Math.floor(Math.random() * offsets.length)];
+    this.setState({ evadeKey: key, evadeX: o.x, evadeY: o.y });
+    this._evadeTimer = setTimeout(
+      () => this.setState({ evadeKey: null, evadeX: 0, evadeY: 0 }),
+      2000
+    );
+  }
+
+  _btnStyle(key, base) {
+    const { evadeKey, evadeX, evadeY } = this.state;
+    const evading = evadeKey === key;
+    return Object.assign({}, base, {
+      transform:  evading ? `translate(${evadeX}px,${evadeY}px)` : 'translate(0,0)',
+      transition: evading
+        ? 'transform 0.18s cubic-bezier(.22,.68,0,1.3)'
+        : 'transform 0.65s cubic-bezier(.22,.68,0,1.1)',
+      cursor: 'pointer',
+    });
+  }
 
   _attachGlow() {
     this._detachGlow();
@@ -133,7 +123,6 @@ class Component extends DCLogic {
     if (!stage) return;
     this._glowStage = stage;
     this._rafId = null;
-    this._mx = 0; this._my = 0;
 
     this._onMove = (e) => {
       this._mx = e.clientX; this._my = e.clientY;
@@ -147,16 +136,13 @@ class Component extends DCLogic {
           const cy = r.top  + r.height / 2;
           const dx = (this._mx - cx) / (window.innerWidth  / 2);
           const dy = (this._my - cy) / (window.innerHeight / 2);
-          // magnetic lean — max ±10px
           const tx = dx * 10;
           const ty = dy * 10;
-          // glow shadow follows cursor
           const sx = (this._mx - cx) * 0.18;
           const sy = (this._my - cy) * 0.18;
           const dist = Math.sqrt(dx*dx + dy*dy);
           const spread = Math.max(4, 28 - dist * 12);
           el.style.textShadow = `${sx}px ${sy}px ${spread}px rgba(245,192,24,0.55), 0 0 60px rgba(245,192,24,0.18)`;
-          // only apply magnetic if not currently evading
           if (!this.state.evadeKey) {
             el.style.transform = `translate(${tx}px,${ty}px)`;
             el.style.transition = 'transform 0.12s ease-out, text-shadow 0.12s ease-out';
@@ -185,67 +171,33 @@ class Component extends DCLogic {
     }
   }
 
-  _evade(key) {
-    if (this._evadeTimer) clearTimeout(this._evadeTimer);
-    const offsets = [
-      { x: 60, y: 0 }, { x: -60, y: 0 },
-      { x: 0, y: 44 }, { x: 0, y: -44 },
-      { x: 48, y: 32 }, { x: -48, y: -32 },
-      { x: -48, y: 32 }, { x: 48, y: -32 },
-    ];
-    const o = offsets[Math.floor(Math.random() * offsets.length)];
-    this.setState({ evadeKey: key, evadeX: o.x, evadeY: o.y });
-    this._evadeTimer = setTimeout(
-      () => this.setState({ evadeKey: null, evadeX: 0, evadeY: 0 }),
-      2000
-    );
-  }
-
-  _btnStyle(key, base) {
-    const { evadeKey, evadeX, evadeY } = this.state;
-    const evading = evadeKey === key;
-    return Object.assign({}, base, {
-      transform:  evading ? `translate(${evadeX}px,${evadeY}px)` : 'translate(0,0)',
-      transition: evading
-        ? 'transform 0.18s cubic-bezier(.22,.68,0,1.3), opacity 0.15s'
-        : 'transform 0.65s cubic-bezier(.22,.68,0,1.1), opacity 0.15s',
-      cursor: 'pointer',
-    });
-  }
-
   renderVals() {
-    const { page } = this.state;
-    const nav = (p) => () => this.setState({ page: p });
-
-    // shared base styles
-    const filled  = { border: 'none', borderRadius: '6px', background: 'var(--kunvad-accent)', padding: '14px 32px', fontFamily: "'Space Grotesk', sans-serif", fontWeight: 700, fontSize: '15px', letterSpacing: '0.5px', color: 'var(--kunvad-hl)', lineHeight: 1 };
-    const outlined = { border: '2px solid var(--kunvad-accent)', borderRadius: '6px', background: 'transparent', padding: '12px 32px', fontFamily: "'Space Grotesk', sans-serif", fontWeight: 700, fontSize: '15px', letterSpacing: '0.5px', color: 'var(--kunvad-accent)', lineHeight: 1 };
-    const pink    = { border: 'none', borderRadius: '6px', background: 'var(--kunvad-hl)', padding: '14px 32px', fontFamily: "'Space Grotesk', sans-serif", fontWeight: 700, fontSize: '15px', letterSpacing: '0.5px', color: 'var(--kunvad-accent)', lineHeight: 1 };
-
+    const go = (url) => () => { window.location.href = url; };
+    const filled   = { border: 'none', borderRadius: '6px', background: 'var(--accent)', padding: '14px 32px', fontFamily: "'Space Grotesk', sans-serif", fontWeight: 700, fontSize: '15px', letterSpacing: '0.5px', color: 'var(--hl)', lineHeight: 1 };
+    const outlined = { border: '2px solid var(--accent)', borderRadius: '6px', background: 'transparent', padding: '12px 32px', fontFamily: "'Space Grotesk', sans-serif", fontWeight: 700, fontSize: '15px', letterSpacing: '0.5px', color: 'var(--accent)', lineHeight: 1 };
+    const pink     = { border: 'none', borderRadius: '6px', background: 'var(--hl)', padding: '14px 32px', fontFamily: "'Space Grotesk', sans-serif", fontWeight: 700, fontSize: '15px', letterSpacing: '0.5px', color: 'var(--accent)', lineHeight: 1 };
     return {
-      showHome:    page === 'home',
-      showInner:   page !== 'home',
-      showMe:      page === 'me',
-      showBlog:    page === 'blog',
-      showProject: page === 'project',
-      showHi:      page === 'hi',
-      goHome:    nav('home'),
-      goMe:      nav('me'),
-      goBlog:    nav('blog'),
-      goProject: nav('project'),
-      goHi:      nav('hi'),
-      // evasive handlers
+      homeTitle:   this._get('home','title'),
+      homeTagline: this._get('home','tagline'),
+      homeExtra:   this._get('home','extra'),
+      navMe:      this._get('nav','me'),
+      navProject: this._get('nav','project'),
+      navBlog:    this._get('nav','blog'),
+      navHi:      this._get('nav','hi'),
+      goMe:      go('/me'),
+      goProject: go('/project'),
+      goBlog:    go('/blog'),
+      goHi:      go('/hi'),
       evadeMe:      () => this._evade('me'),
       evadeProject: () => this._evade('project'),
       evadeBlog:    () => this._evade('blog'),
       evadeHi:      () => this._evade('hi'),
       evadeTitle:   () => this._evade('title'),
-      // evasive styles
-      styleMe:      this._btnStyle('me',      filled),
+      styleMe:      this._btnStyle('me', filled),
       styleProject: this._btnStyle('project', outlined),
-      styleBlog:    this._btnStyle('blog',    pink),
-      styleHi:      this._btnStyle('hi',      filled),
-      styleTitleEvade: this._btnStyle('title', { display: 'inline-block', cursor: 'default', fontFamily: "'Bebas Neue', serif", fontWeight: 400, fontSize: '140px', letterSpacing: '24px', color: 'var(--kunvad-accent)', lineHeight: 1, textAlign: 'center' }),
+      styleBlog:    this._btnStyle('blog', pink),
+      styleHi:      this._btnStyle('hi', filled),
+      styleTitleEvade: this._btnStyle('title', { display: 'inline-block', cursor: 'default', fontFamily: "'Bebas Neue', serif", fontWeight: 400, fontSize: '140px', letterSpacing: '24px', color: 'var(--accent)', lineHeight: 1, textAlign: 'center' }),
     };
   }
 }

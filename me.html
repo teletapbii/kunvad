@@ -22,20 +22,24 @@
 </helmet>
 
 <nav style="position:fixed; top:0; left:0; right:0; z-index:100; display:flex; align-items:center; justify-content:space-between; padding:0 64px; height:64px; background:var(--bg); border-bottom:1px solid rgba(245,192,24,0.2);">
-  <a href="KUNVAD-Home.dc.html" style="font-family:'Bebas Neue',serif; font-size:28px; letter-spacing:6px; color:var(--accent); line-height:1;">{{ navLogo }}</a>
+  <a href="/" style="font-family:'Bebas Neue',serif; font-size:28px; letter-spacing:6px; color:var(--accent); line-height:1;">{{ navLogo }}</a>
   <div style="display:flex; gap:12px; align-items:center;">
-    <a href="KUNVAD-Me.dc.html"      style="border-radius:6px; background:var(--accent); padding:9px 20px; font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:13px; color:var(--hl);">{{ navMe }}</a>
-    <a href="KUNVAD-Project.dc.html" style="border:2px solid var(--accent); border-radius:6px; padding:7px 20px; font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:13px; color:var(--accent);">{{ navProject }}</a>
-    <a href="KUNVAD-Blog.dc.html"    style="border-radius:6px; background:var(--hl); padding:9px 20px; font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:13px; color:var(--accent);">{{ navBlog }}</a>
-    <a href="KUNVAD-Hi.dc.html"      style="border-radius:6px; background:var(--accent); padding:9px 20px; font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:13px; color:var(--hl);">{{ navHi }}</a>
+    <a href="/me"      style="border-radius:6px; background:var(--accent); padding:9px 20px; font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:13px; color:var(--hl);">{{ navMe }}</a>
+    <a href="/project" style="border:2px solid var(--accent); border-radius:6px; padding:7px 20px; font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:13px; color:var(--accent);">{{ navProject }}</a>
+    <a href="/blog"    style="border-radius:6px; background:var(--hl); padding:9px 20px; font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:13px; color:var(--accent);">{{ navBlog }}</a>
+    <a href="/hi"      style="border-radius:6px; background:var(--accent); padding:9px 20px; font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:13px; color:var(--hl);">{{ navHi }}</a>
   </div>
 </nav>
 
 <div class="page" style="width:100%; min-height:100vh; padding:120px 64px 80px; display:flex; align-items:flex-start; justify-content:center;">
   <div style="width:100%; max-width:860px; display:flex; flex-direction:column; gap:24px;">
-    <span style="font-family:'Bebas Neue',serif; font-weight:400; font-size:96px; letter-spacing:8px; color:var(--accent); line-height:1;">{{ hiHeading }}</span>
+    <span style="font-family:'Bebas Neue',serif; font-weight:400; font-size:96px; letter-spacing:14px; color:var(--accent); line-height:1;">{{ meHeading }}</span>
+    <span style="font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:13px; letter-spacing:4px; color:var(--hl); line-height:1;">{{ meSubtitle }}</span>
     <div style="width:64px; height:3px; border-radius:2px; background:var(--hl);"></div>
-    <p style="font-family:'Space Grotesk',sans-serif; font-weight:300; font-size:20px; line-height:1.7; color:rgba(255,255,255,0.92); max-width:480px;">{{ hiBody }}</p>
+    <sc-if value="{{ meImage }}" hint-placeholder-val="{{ false }}">
+      <img src="{{ meImageSrc }}" style="width:200px; height:200px; object-fit:cover; border-radius:12px;" />
+    </sc-if>
+    <p style="font-family:'Space Grotesk',sans-serif; font-weight:300; font-size:20px; line-height:1.7; color:rgba(255,255,255,0.92); max-width:560px;">{{ meBody }}</p>
   </div>
 </div>
 </x-dc>
@@ -44,10 +48,17 @@ class Component extends DCLogic {
   _D = {
     theme: { bg: 'rgb(106,171,176)', accent: 'rgb(245,192,24)', hl: 'rgb(255,61,138)' },
     nav:   { logo: 'KUNVAD', me: "It's me", project: "It's a Project", blog: "It's Blog", hi: 'Hi' },
-    hi:    { heading: 'HI THERE', body: 'Thanks for stopping by. Feel free to reach out — always happy to connect over nonsense.' },
+    me:    { heading: "IT'S ME", subtitle: 'WISDOM IN NONSENSE', body: "Welcome! My name is Tap KunvaD. I'm a believer that you can find wisdom in nonsense. Here, I share a blend of my personal interests and my 12-year journey in fashion retail.", image: null },
   };
-  state = { cms: this._load() };
-  _load() { try { return JSON.parse(localStorage.getItem('kunvad_cms') || '{}'); } catch(e) { return {}; } }
+  state = { cms: this._loadLocal() };
+  _loadLocal() { try { return JSON.parse(localStorage.getItem('kunvad_cms') || '{}'); } catch(e) { return {}; } }
+  _merge(published, local) {
+    const out = {};
+    Object.keys(Object.assign({}, published, local)).forEach(k => {
+      out[k] = Object.assign({}, (published || {})[k], (local || {})[k]);
+    });
+    return out;
+  }
   _get(s, k) { const c = this.state.cms; return (c[s] && c[s][k] !== undefined) ? c[s][k] : (this._D[s] || {})[k]; }
   _applyTheme() {
     const r = document.documentElement;
@@ -56,8 +67,12 @@ class Component extends DCLogic {
     r.style.setProperty('--hl',     this._get('theme','hl')     || 'rgb(255,61,138)');
   }
   componentDidMount() {
-    this._onStorage = () => this.setState({ cms: this._load() });
+    this._onStorage = () => this.setState({ cms: this._merge(this._published, this._loadLocal()) });
     window.addEventListener('storage', this._onStorage);
+    fetch('content.json').then(r => r.ok ? r.json() : {}).catch(() => ({})).then(pub => {
+      this._published = pub;
+      this.setState({ cms: this._merge(pub, this._loadLocal()) });
+    });
     this._applyTheme();
   }
   componentDidUpdate() { this._applyTheme(); }
@@ -67,8 +82,8 @@ class Component extends DCLogic {
     return {
       navLogo: g('nav','logo') || 'KUNVAD', navMe: g('nav','me') || "It's me",
       navProject: g('nav','project') || "It's a Project", navBlog: g('nav','blog') || "It's Blog", navHi: g('nav','hi') || 'Hi',
-      hiHeading: g('hi','heading') || 'HI THERE',
-      hiBody:    g('hi','body')    || '',
+      meHeading: g('me','heading') || "IT'S ME", meSubtitle: g('me','subtitle') || 'WISDOM IN NONSENSE',
+      meBody: g('me','body') || '', meImage: g('me','image'), meImageSrc: g('me','image') || '',
     };
   }
 }

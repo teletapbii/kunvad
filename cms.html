@@ -34,7 +34,7 @@
   <div style="display:flex; gap:8px; align-items:center;">
     <button onClick="{{ onExport }}" style="padding:7px 16px; border-radius:6px; background:rgba(245,192,24,0.1); border:1px solid rgba(245,192,24,0.25); color:rgb(245,192,24); font-family:'Space Grotesk',sans-serif; font-weight:600; font-size:12px; cursor:pointer;">↓ Export</button>
     <label style="padding:7px 16px; border-radius:6px; background:rgba(255,255,255,0.05); border:1px solid rgba(255,255,255,0.1); color:rgba(255,255,255,0.6); font-weight:600; font-size:12px; cursor:pointer; font-family:'Space Grotesk',sans-serif;">↑ Import<input type="file" accept=".json" onChange="{{ onImport }}" style="display:none;" /></label>
-    <a href="KUNVAD-Home.dc.html" target="_blank" style="padding:7px 16px; border-radius:6px; background:rgb(245,192,24); color:#080810; font-weight:700; font-size:12px; font-family:'Space Grotesk',sans-serif;">Visit Site →</a>
+    <a href="/" target="_blank" style="padding:7px 16px; border-radius:6px; background:rgb(245,192,24); color:#080810; font-weight:700; font-size:12px; font-family:'Space Grotesk',sans-serif;">Visit Site →</a>
   </div>
 </header>
 
@@ -223,7 +223,7 @@ class Component extends DCLogic {
     project: { heading: "IT'S A PROJECT", status: 'Nonsense thing is loading....' },
     hi:      { heading: 'HI THERE',     body: 'Thanks for stopping by. Feel free to reach out — always happy to connect over nonsense.' },
   };
-  _URLS = { home:'KUNVAD-Home.dc.html', me:'KUNVAD-Me.dc.html', blog:'KUNVAD-Blog.dc.html', project:'KUNVAD-Project.dc.html', hi:'KUNVAD-Hi.dc.html' };
+  _URLS = { home:'/', me:'/me', blog:'/blog', project:'/project', hi:'/hi' };
   state = { content: this._load(), preview: 'home' };
   _setPreview(page) {
     this.setState({ preview: page });
@@ -238,6 +238,11 @@ class Component extends DCLogic {
   componentDidMount() {
     const f = document.querySelector('[data-cms-preview]');
     if (f) f.src = this._URLS[this.state.preview];
+    if (Object.keys(this.state.content).length === 0) {
+      fetch('content.json').then(r => r.ok ? r.json() : {}).catch(() => ({})).then(pub => {
+        if (Object.keys(this.state.content).length === 0) this._save(pub);
+      });
+    }
   }
   _load() { try { return JSON.parse(localStorage.getItem('kunvad_cms') || '{}'); } catch(e) { return {}; } }
   _get(s, k) { const c = this.state.content; return (c[s] && c[s][k] !== undefined) ? c[s][k] : this._D[s][k]; }
@@ -286,7 +291,7 @@ class Component extends DCLogic {
   }
   renderVals() {
     const g = (s, k) => this._get(s, k);
-    const urls = { home:'KUNVAD-Home.dc.html', me:'KUNVAD-Me.dc.html', blog:'KUNVAD-Blog.dc.html', project:'KUNVAD-Project.dc.html', hi:'KUNVAD-Hi.dc.html' };
+    const urls = { home:'/', me:'/me', blog:'/blog', project:'/project', hi:'/hi' };
     return {
       bgHex: this._rgbToHex(g('theme','bg')), accentHex: this._rgbToHex(g('theme','accent')), hlHex: this._rgbToHex(g('theme','hl')),
       onBgChange:     (e) => this._set('theme','bg',     this._hexToRgb(e.target.value)),

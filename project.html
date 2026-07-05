@@ -22,12 +22,12 @@
 </helmet>
 
 <nav style="position:fixed; top:0; left:0; right:0; z-index:100; display:flex; align-items:center; justify-content:space-between; padding:0 64px; height:64px; background:var(--bg); border-bottom:1px solid rgba(245,192,24,0.2);">
-  <a href="KUNVAD-Home.dc.html" style="font-family:'Bebas Neue',serif; font-size:28px; letter-spacing:6px; color:var(--accent); line-height:1;">{{ navLogo }}</a>
+  <a href="/" style="font-family:'Bebas Neue',serif; font-size:28px; letter-spacing:6px; color:var(--accent); line-height:1;">{{ navLogo }}</a>
   <div style="display:flex; gap:12px; align-items:center;">
-    <a href="KUNVAD-Me.dc.html"      style="border-radius:6px; background:var(--accent); padding:9px 20px; font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:13px; color:var(--hl);">{{ navMe }}</a>
-    <a href="KUNVAD-Project.dc.html" style="border:2px solid var(--accent); border-radius:6px; padding:7px 20px; font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:13px; color:var(--accent);">{{ navProject }}</a>
-    <a href="KUNVAD-Blog.dc.html"    style="border-radius:6px; background:var(--hl); padding:9px 20px; font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:13px; color:var(--accent);">{{ navBlog }}</a>
-    <a href="KUNVAD-Hi.dc.html"      style="border-radius:6px; background:var(--accent); padding:9px 20px; font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:13px; color:var(--hl);">{{ navHi }}</a>
+    <a href="/me"      style="border-radius:6px; background:var(--accent); padding:9px 20px; font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:13px; color:var(--hl);">{{ navMe }}</a>
+    <a href="/project" style="border:2px solid var(--accent); border-radius:6px; padding:7px 20px; font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:13px; color:var(--accent);">{{ navProject }}</a>
+    <a href="/blog"    style="border-radius:6px; background:var(--hl); padding:9px 20px; font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:13px; color:var(--accent);">{{ navBlog }}</a>
+    <a href="/hi"      style="border-radius:6px; background:var(--accent); padding:9px 20px; font-family:'Space Grotesk',sans-serif; font-weight:700; font-size:13px; color:var(--hl);">{{ navHi }}</a>
   </div>
 </nav>
 
@@ -46,8 +46,15 @@ class Component extends DCLogic {
     nav:     { logo: 'KUNVAD', me: "It's me", project: "It's a Project", blog: "It's Blog", hi: 'Hi' },
     project: { heading: "IT'S A PROJECT", status: 'Nonsense thing is loading....' },
   };
-  state = { cms: this._load() };
-  _load() { try { return JSON.parse(localStorage.getItem('kunvad_cms') || '{}'); } catch(e) { return {}; } }
+  state = { cms: this._loadLocal() };
+  _loadLocal() { try { return JSON.parse(localStorage.getItem('kunvad_cms') || '{}'); } catch(e) { return {}; } }
+  _merge(published, local) {
+    const out = {};
+    Object.keys(Object.assign({}, published, local)).forEach(k => {
+      out[k] = Object.assign({}, (published || {})[k], (local || {})[k]);
+    });
+    return out;
+  }
   _get(s, k) { const c = this.state.cms; return (c[s] && c[s][k] !== undefined) ? c[s][k] : (this._D[s] || {})[k]; }
   _applyTheme() {
     const r = document.documentElement;
@@ -56,8 +63,12 @@ class Component extends DCLogic {
     r.style.setProperty('--hl',     this._get('theme','hl')     || 'rgb(255,61,138)');
   }
   componentDidMount() {
-    this._onStorage = () => this.setState({ cms: this._load() });
+    this._onStorage = () => this.setState({ cms: this._merge(this._published, this._loadLocal()) });
     window.addEventListener('storage', this._onStorage);
+    fetch('content.json').then(r => r.ok ? r.json() : {}).catch(() => ({})).then(pub => {
+      this._published = pub;
+      this.setState({ cms: this._merge(pub, this._loadLocal()) });
+    });
     this._applyTheme();
   }
   componentDidUpdate() { this._applyTheme(); }
