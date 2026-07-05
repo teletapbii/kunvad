@@ -1,7 +1,7 @@
 {
-  "theme": { "bg": "rgb(106,171,176)", "accent": "rgb(245,192,24)", "hl": "rgb(255,61,138)" },
+  "theme": { "bg": "rgb(106,171,176)", "accent": "rgb(245,192,24)", "hl": "rgb(195,209,23)" },
   "nav": { "logo": "KUNVAD", "me": "It's me", "project": "It's a Project", "blog": "It's Blog", "hi": "Hi" },
-  "home": { "title": "KUNVAD", "tagline": "Wisdom in Nonsense", "extra": "Your text here" },
+  "home": { "title": "KUNVAD", "tagline": "Wisdom in Nonsense", "extra": "" },
   "me": {
     "heading": "IT'S ME 0-0",
     "subtitle": "WISDOM IN NONSENSE",
