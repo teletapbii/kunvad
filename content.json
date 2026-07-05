@@ -3,10 +3,10 @@
   "nav": { "logo": "KUNVAD", "me": "It's me", "project": "It's a Project", "blog": "It's Blog", "hi": "Hi" },
   "home": { "title": "KUNVAD", "tagline": "Wisdom in Nonsense", "extra": "Your text here" },
   "me": {
-    "heading": "IT'S ME",
+    "heading": "IT'S ME 0-0",
     "subtitle": "WISDOM IN NONSENSE",
     "body": "Welcome! My name is Tap KunvaD. I'm a believer that you can find wisdom in nonsense. Here, I share a blend of my personal interests and my 12-year journey in fashion retail.",
-    "image": null
+    "image": "uploads/me-photo.jpg"
   },
   "blog": { "heading": "IT'S BLOG", "status": "Nonsense Story is loading...." },
   "project": { "heading": "IT'S A PROJECT", "status": "Nonsense thing is loading...." },
